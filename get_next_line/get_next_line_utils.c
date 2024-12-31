@@ -6,13 +6,13 @@
 /*   By: aouaalla <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:05:07 by aouaalla          #+#    #+#             */
-/*   Updated: 2024/11/28 14:05:09 by aouaalla         ###   ########.fr       */
+/*   Updated: 2024/12/31 12:25:44 by aouaalla         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_strjoin(char *s1, char const *s2)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
 	char	*p;
 	size_t	total_len;
@@ -64,7 +64,7 @@ size_t	ft_strlen(const char *str)
 	return (i);
 }
 
-char	*ft_strdup(char *str)
+char	*ft_strdup(const char *str)
 {
 	char	*p;
 	size_t	i;
