@@ -28,7 +28,7 @@ static char	*init(int fd, char *s, char *buffer)
 	{
 		i = read(fd, buffer, BUFFER_SIZE);
 		if (i < 0)
-			return (clear(&buffer), buffer);
+			return (perror("Error reading the file"), clear(&buffer), buffer);
 		buffer[i] = '\0';
 		tmp = s;
 		s = ft_strjoin(tmp, buffer);
@@ -70,8 +70,8 @@ char	*get_next_line(int fd)
 	char		*line;
 
 	p = NULL;
-	if (fd < 0 || BUFFER_SIZE >= INT_MAX || BUFFER_SIZE <= 0)
-		return (NULL);
+	if (BUFFER_SIZE >= INT_MAX || BUFFER_SIZE <= 0)
+		return (write(2, "Invalid BUFFER_SIZE!", 19), NULL);
 	p = (char *)malloc(((BUFFER_SIZE + 1)) * sizeof(char));
 	if (!p)
 		return (p);
