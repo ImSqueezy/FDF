@@ -33,30 +33,24 @@ void	get_map_data(char *filename, d_st **data_ptr)
 
 void	fill_array(char *line, int **arr, d_st **data_ptr)
 {
-	int		i;
+	static int		i;
 	int		j;
 	char	**line_splitted;
 
 	line_splitted = ft_split(line, ' ');
-	i = 0;
-	while (i < (*data_ptr)->height && line[i])
+	if (!line_splitted)
+		;
+	
+	j = 0;
+	while (j < (*data_ptr)->width)
 	{
-		arr[i] = malloc(sizeof(int) * (*data_ptr)->width);
-		if (!arr[i])
-		{
-			write(2, "Memory allocation failed\n", 25);
-			return ;
-		}
-		j = 0;
-		while (j < (*data_ptr)->width)
-		{
-			arr[i][j] = ft_atoi(line_splitted[i]);
-			j++;
-		}
-		free(line_splitted[i]);
-		i++;
+		// printf("%d %d\n", i, j);
+		arr[i][j] = ft_atoi(line_splitted[j]);
+		free(line_splitted[j]);
+		j++;
 	}
 	free(line_splitted);
+	i++;
 }
 
 void	file_check(char	*file, d_st **data_ptr)
@@ -67,15 +61,17 @@ void	file_check(char	*file, d_st **data_ptr)
 
 	fd = open(file, O_RDONLY);
 	get_map_data(file, data_ptr);
-	(*(*data_ptr)).array = (int **)malloc((*data_ptr)->height * sizeof(int *));
+	printf("%d ", (*data_ptr)->height);
+	printf("%d\n", (*data_ptr)->width);
+	(*(*data_ptr)).array = malloc((*data_ptr)->height * sizeof(int *));
 	i = 0;
 	while (i < (*data_ptr)->height)
 	{
 		line = get_next_line(fd);
-		(*(*data_ptr)).array[i] = (int *)malloc((*data_ptr)->width * sizeof(int *));
+		(*(*data_ptr)).array[i] = malloc((*data_ptr)->width * sizeof(int));
 		if (!(*data_ptr)->array)
 			write(2, "MALLOC ERROR", 12);
-		fill_array(line, &(*data_ptr)->array[i], data_ptr);
+		fill_array(line, (*data_ptr)->array, data_ptr);
 		i++;
 		free(line);
 	}
@@ -91,6 +87,11 @@ int main(int argc, char **argv)
 	(data_ptr)->width = 0;
 	(data_ptr)->height = 0;
 	file_check(argv[1], &data_ptr);
-	system("leaks a.out");
+	int i = -1;
+	while (++i < data_ptr->height)
+		free(data_ptr->array[i]);
+	free(data_ptr->array);
+	free(data_ptr);
+	// system("leaks a.out");
 	return (0);
 }
