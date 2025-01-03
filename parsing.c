@@ -2,6 +2,8 @@
 
 typedef struct data_struct
 {
+	void			*mlx_ptr;
+	void			*win_ptr;
 	unsigned int	width;
 	unsigned int	height;
 	int				**array;
@@ -18,8 +20,8 @@ void	get_map_data(char *filename, d_st *data_ptr)
 	i = 0;
 	while (tmp[i])
 	{
-		if (tmp[i] != 32 && tmp[i + 1] == 32 || tmp[i + 1] == '\0')
-		(*data_ptr).width++;
+		if ((tmp[i] != 32 && tmp[i + 1] == 32) || tmp[i + 1] == '\0')
+			(*data_ptr).width++;
 		i++;
 	}
 	while (tmp)
@@ -33,13 +35,13 @@ void	get_map_data(char *filename, d_st *data_ptr)
 
 void	fill_array(char *line, int **arr, d_st *data_ptr)
 {
-	static int		i;
-	int		j;
-	char	**line_splitted;
+	static unsigned int		i;
+	unsigned int			j;
+	char					**line_splitted;
 
 	line_splitted = ft_split(line, ' ');
 	if (!line_splitted)
-		;
+		return ;
 	
 	j = 0;
 	while (j < (*data_ptr).width)
@@ -54,9 +56,9 @@ void	fill_array(char *line, int **arr, d_st *data_ptr)
 
 void	file_check(char	*file, d_st *data_ptr)
 {
-	int		i;
-	int		fd;
-	char	*line;
+	unsigned int		i;
+	int					fd;
+	char				*line;
 
 	fd = open(file, O_RDONLY);
 	get_map_data(file, data_ptr);
@@ -74,19 +76,25 @@ void	file_check(char	*file, d_st *data_ptr)
 	}
 }
 
+void	connection_init(char *map, d_st *data_ptr)
+{
+	char	*title;
+	
+	title = ft_strjoin("aouaalla's FDF : ", map);
+	(*data_ptr).mlx_ptr = mlx_init();
+	(*data_ptr).win_ptr = mlx_new_window((*data_ptr).mlx_ptr, SIZE_X, SIZE_Y, title);
+	(*data_ptr).width = 0;
+	(*data_ptr).height = 0;
+}
+
 int main(int argc, char **argv)
 {
 	d_st	data_ptr;
 
 	if (argc != 2)
 		return (write(2, "Invalid number of arguments!", 28), 0);
-	(data_ptr).width = 0;
-	(data_ptr).height = 0;
+	connection_init(argv[1], &data_ptr);
 	file_check(argv[1], &data_ptr);
-	int i = -1;
-	while (++i < data_ptr.height)
-		free(data_ptr.array[i]);
-	free(data_ptr.array);
 	system("leaks a.out");
 	return (0);
 }
