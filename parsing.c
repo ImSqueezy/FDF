@@ -95,6 +95,6 @@ int main(int argc, char **argv)
 		return (write(2, "Invalid number of arguments!", 28), 0);
 	connection_init(argv[1], &data_ptr);
 	file_check(argv[1], &data_ptr);
-	system("leaks a.out");
+	//system("leaks a.out");
 	return (0);
 }
