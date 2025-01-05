@@ -2,12 +2,22 @@
 
 typedef struct data_struct
 {
-	void			*mlx_ptr;
-	void			*win_ptr;
 	unsigned int	width;
 	unsigned int	height;
+	void			*mlx_ptr;
+	void			*win_ptr;
 	int				**array;
+	t_img			img;
 } d_st;
+
+typedef	struct s_image
+{
+	void	*mlx_img;
+	char	*addr;
+	int		bpp;
+	int		line_len;
+	int		endian;
+} t_img;
 
 void	get_map_data(char *filename, d_st *data_ptr)
 {
@@ -48,10 +58,17 @@ void	fill_array(char *line, int **arr, d_st *data_ptr)
 	{
 		arr[i][j] = ft_atoi(line_splitted[j]);
 		free(line_splitted[j]);
-		j++;
-	}
-	free(line_splitted);
+		j++;  
+	ree(line_splitted);
 	i++;
+}
+
+void	img_pix_put(t_img *img, int x, inty , int color)
+{
+	char *pixel;
+
+	pixel = img->addr + (y * img->line_len + x * (img->bpp / *));
+	*(int *)pixel = color;
 }
 
 void	file_check(char	*file, d_st *data_ptr)
@@ -76,15 +93,22 @@ void	file_check(char	*file, d_st *data_ptr)
 	}
 }
 
+int	draw_pixel(d_st *data_ptr)
+{
+	data_ptr->img.mlx_img = mlx_new_image(data_ptr, SIZE_X, SIZE_Y);
+	return (0);
+}
+
 void	connection_init(char *map, d_st *data_ptr)
 {
 	char	*title;
 	
 	title = ft_strjoin("aouaalla's FDF : ", map);
-	(*data_ptr).mlx_ptr = mlx_init();
-	(*data_ptr).win_ptr = mlx_new_window((*data_ptr).mlx_ptr, SIZE_X, SIZE_Y, title);
 	(*data_ptr).width = 0;
 	(*data_ptr).height = 0;
+	(*data_ptr).mlx_ptr = mlx_init();
+	(*data_ptr).win_ptr = mlx_new_window((*data_ptr).mlx_ptr, SIZE_X, SIZE_Y, title);
+
 }
 
 int main(int argc, char **argv)
@@ -95,6 +119,9 @@ int main(int argc, char **argv)
 		return (write(2, "Invalid number of arguments!", 28), 0);
 	connection_init(argv[1], &data_ptr);
 	file_check(argv[1], &data_ptr);
+	// draw_pixel(&data_ptr);
+	mlx_loop_hook(data_ptr.mlx_ptr, &draw_pixel, &data_ptr);
+	mlx_loop(data_ptr.mlx_ptr);
 	//system("leaks a.out");
 	return (0);
 }
