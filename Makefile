@@ -1,36 +1,38 @@
-NAME = warframe.a
+NAME = fdf
 
-OBJ = parsing.o get_next_line/get_next_line.o get_next_line/get_next_line_utils.o \
-		get_next_line/get_next_line.o get_next_line/get_next_line_utils.o
+ARCHIVE = warframe.a
 
-FLAGS = -c -Wall -Wextra -Werror
+OBJ = fdf.o parsing.o drawing.o \
+		get_next_line/get_next_line.o get_next_line/get_next_line_utils.o \
+		
 
-LIBRARIES = -I minilibx-linux/ -L minilibx-linux/ -l minilibx-linux/libmlx-linux.a \
-				-L Libft/ -l Libft/Libft.a \
-				-lmlx -lXext -lX11
+FLAGS = -c -Wall -Wextra -Werror 
 
 LIBFT = Libft/libft.a
 
+LIB_MLX = minilibx-linux/libmlx_Linux.a
+
+LIBRARIES = $(ARCHIVE) $(LIBFT) $(LIB_MLX) -lXext -lX11
 COMPILE = cc $(FLAGS)
 
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJ)
-	ar r $(NAME) *.o
-	ar r $(NAME) $(LIBFT)
+	ar r $(ARCHIVE) *.o
+	cc $(LIBRARIES) -g -o $(NAME)
 
 %.o: %.c FDF.h
-	$(COMPILE) $< $(MLIB_LIBRARIES)
+	$(COMPILE) -g $<
 
 $(LIBFT):
 	make -C Libft/
 
 clean:
-	rm -f *.o
-	rm -f Libft/*.o
+	rm -f *.o $(ARCHIVE)
+	rm -f Libft/*.o Libft/libft.a
 
 fclean: clean
-	rm -f $(NAME)
+	rm -f $(NAME) fdf
 	make fclean -C Libft/
 
 re: fclean all
@@ -39,3 +41,5 @@ re-clean: fclean all
 	rm -f *.o
 
 .PHONY: clean
+
+# remove -g flag and correct the check condition for argc
