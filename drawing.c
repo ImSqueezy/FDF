@@ -12,7 +12,7 @@
 
 #include "FDF.h"
 
-void	connection_init(char *map, g_data *data_ptr, i_data *img_ptr)
+int	connection_init(char *map, g_data *data_ptr, i_data *img_ptr)
 {
 	char	*title;
 
@@ -20,46 +20,42 @@ void	connection_init(char *map, g_data *data_ptr, i_data *img_ptr)
 	data_ptr->mlx_ptr = mlx_init();
 	data_ptr->win_ptr = mlx_new_window(data_ptr->mlx_ptr, SIZE_X, SIZE_Y, title);
 	if (!img_ptr->mlx_img)
-		return ;
+		return (0);
 	img_ptr->mlx_img = mlx_new_image(data_ptr->mlx_ptr, SIZE_X, SIZE_Y);
 	if (!img_ptr->mlx_img)
-		return ;
+		return (0);
 	img_ptr->addr = mlx_get_data_addr(img_ptr->mlx_img, &img_ptr->bp_pixel,
 			&img_ptr->line_len, &img_ptr->endian);
 	if (!img_ptr->addr)
-		return ;
+		return (0);
+	return (0);
 }
 
-void	img_pix_put(i_data *img, int x, int y, int color)
+int	handle_nothing(void)
 {
-    char    *pixel;
-
-    pixel = img->addr + (y * img->line_len + x * (img->bp_pixel / 8));
-    *(unsigned int *)pixel = color;
+	return (0);
 }
 
-void	render_background(i_data *img, int color)
+int	key(int keysysm, g_data *gl_ptr)
 {
-    int	i;
-    int	j;
-
-    i = 0;
-    while (i < SIZE_Y)
-    {
-        j = 0;
-        while (j < SIZE_X)
-            img_pix_put(img, j++, i, color);
-		i++;
-    }
+	if (keysysm == XK_Escape)
+		mlx_destroy_window(gl_ptr->mlx_ptr, gl_ptr->win_ptr);
+	printf("BYE!");
+	return (0);
 }
 
 int	draw_onWin(g_data *gl_ptr, i_data *im_ptr)
 {
-	(void )	im_ptr;
 	if (gl_ptr->win_ptr == NULL)
         return (1);
-    render_background(im_ptr, 0xFFFFFF);
+
+	
     mlx_put_image_to_window(gl_ptr->mlx_ptr, gl_ptr->win_ptr, (*im_ptr).mlx_img, 0, 0);
-	mlx_loop(gl_ptr->mlx_ptr);
+	// setting up hooks
+	mlx_loop_hook(gl_ptr->mlx_ptr, &handle_nothing, gl_ptr);
+	mlx_hook((*gl_ptr).win_ptr, KeyPress, KeyPressMask, &key, gl_ptr);
+	mlx_loop((*gl_ptr).mlx_ptr);
+	mlx_destroy_display((*gl_ptr).mlx_ptr);
+
 	return (0);
 }

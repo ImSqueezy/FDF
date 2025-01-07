@@ -8,6 +8,8 @@
 # include "ft_printf/ft_printf.h"
 # include "get_next_line/get_next_line.h"
 # include "minilibx-linux/mlx.h"
+# include <X11/X.h>
+# include <X11/keysym.h>
 # include <math.h>
 # include <stdio.h>
 # include <unistd.h>
@@ -30,18 +32,11 @@ typedef struct global_data
 	void			*mlx_ptr;
 	void			*win_ptr;
 	int				**array;
+	i_data			img;
 }	g_data;
 
-typedef struct s_rect // testing
-{
-    int	x;
-    int	y;
-    int width;
-    int height;
-    int color;
-}	t_rect;
-
-void	connection_init(char *map, g_data *data_ptr, i_data *img_ptr);
+int		connection_init(char *map, g_data *data_ptr, i_data *img_ptr);
+// ^ handle errors
 void	file_check(char	*file, g_data *data_ptr);
 void	fill_array(char *line, int **arr, g_data *data_ptr);
 void	get_map_data(char *filename, g_data *data_ptr);

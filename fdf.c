@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "FDF.h"
-
 int main(int argc, char **argv)
 {
 	g_data	gl;
@@ -22,7 +21,7 @@ int main(int argc, char **argv)
 	file_check(argv[1], &gl);
 	connection_init(argv[1], &gl, &im);
 	draw_onWin(&gl, &im);
-	// system("leaks a.out");
+	system("leaks a.out");
 	return (0);
 }
 
