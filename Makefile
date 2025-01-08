@@ -2,7 +2,7 @@ NAME = fdf
 
 ARCHIVE = warframe.a
 
-OBJ = fdf.o parsing.o drawing.o \
+OBJ = fdf.o parsing.o \
 		get_next_line/get_next_line.o get_next_line/get_next_line_utils.o \
 		
 
