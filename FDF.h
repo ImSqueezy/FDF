@@ -1,11 +1,10 @@
 #ifndef FDF_H
 # define FDF_H
 
-# define SIZE_X 1200
-# define SIZE_Y 600
+# define SIZE_X 1300
+# define SIZE_Y 1000
 
 # include "Libft/libft.h"
-# include "ft_printf/ft_printf.h"
 # include "get_next_line/get_next_line.h"
 # include "minilibx-linux/mlx.h"
 # include <X11/X.h>
