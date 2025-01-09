@@ -31,6 +31,7 @@ int	connection_init(char *map, g_data *data_ptr)
 			&data_ptr->img.line_len, &data_ptr->img.endian);
 	if (!data_ptr->img.addr)
 		return (0);
+	data_ptr->zoom = 18;	
 	return (0);
 }
 
@@ -40,7 +41,7 @@ int	key_handle(int keysysm, g_data *gl_ptr)
 	{
 		mlx_destroy_window(gl_ptr->mlx_ptr, gl_ptr->win_ptr);
 		gl_ptr->win_ptr = NULL;
-		printf("BYE!");
+		printf("WINDOW CLOSED!");
 	}
 	return (0);
 }
@@ -56,21 +57,14 @@ void pixel_put(g_data *gl_ptr, int x, int y, int color)
     }
 }
 
-void	zoom_in(float x, float y)
-{
-
-}
-
 void	line_draw(float x, float y, float x1, float y1, g_data *gl_ptr)
 {
 	float	dx;
 	float	dy;
 	float	step;
 
-	zoom_in(x, y, gl_ptr);
 	dx = x1 -x;
 	dy = y1 - y;
-	// which one is greater
 	if (abs((int)dx) > ((int)dy))
 		step = abs((int)dx);
 	else
@@ -79,7 +73,7 @@ void	line_draw(float x, float y, float x1, float y1, g_data *gl_ptr)
 	dy /= step;
 	while ((int)step)
 	{
-		pixel_put(gl_ptr, x, y, 0xFFFFFF);
+		pixel_put(gl_ptr, (x + SIZE_X/2) - (gl_ptr->width * gl_ptr->zoom)/2, (y + SIZE_Y/2) - (gl_ptr->height * gl_ptr->zoom)/2, 0xFFFFFF);
 		x += dx;
 		y += dy;
 		--step;
@@ -100,8 +94,10 @@ int	draw(g_data *gl_ptr)
 		j = 0;
 		while (j < gl_ptr->width)
 		{
-			line_draw(j, i, j + 1, i, gl_ptr);	
-			line_draw(j, i, j, i + 1, gl_ptr);	
+			if (j != gl_ptr->width - 1)	
+				line_draw(j * gl_ptr->zoom, i * gl_ptr->zoom, (j + 1) * gl_ptr->zoom, i * gl_ptr->zoom, gl_ptr);
+			if (i != gl_ptr->height -1)
+				line_draw(j* gl_ptr->zoom, i* gl_ptr->zoom, j * gl_ptr->zoom, (i + 1) * gl_ptr->zoom, gl_ptr);	
 			j++;
 		}
 		i++;

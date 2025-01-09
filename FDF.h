@@ -1,8 +1,8 @@
 #ifndef FDF_H
 # define FDF_H
 
-# define SIZE_X 600
-# define SIZE_Y 300
+# define SIZE_X 1200
+# define SIZE_Y 600
 
 # include "Libft/libft.h"
 # include "ft_printf/ft_printf.h"
@@ -27,12 +27,13 @@ typedef struct image_data
 
 typedef struct global_data
 {
-	int		width;
-	int		height;
-	float	zoom;
 	void	*mlx_ptr;
 	void	*win_ptr;
 	int		**array;
+	int		width;
+	int		height;
+	int		zoom;
+	int		color;
 	i_data	img;
 }	g_data;
 
