@@ -40,8 +40,8 @@ void	get_map_data(char *filename, g_data *data_ptr)
 
 void	fill_array(char *line, int **arr, g_data *data_ptr)
 {
-	static unsigned int		i;
-	unsigned int			j;
+	static int		i;
+	int			j;
 	char					**line_splitted;
 
 	line_splitted = ft_split(line, ' ');
@@ -60,7 +60,7 @@ void	fill_array(char *line, int **arr, g_data *data_ptr)
 
 void	file_check(char	*file, g_data *data_ptr)
 {
-	unsigned int		i;
+	int		i;
 	int					fd;
 	char				*line;
 

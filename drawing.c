@@ -90,7 +90,7 @@ int	draw_onWin(g_data *gl_ptr, i_data *im_ptr)
         return (1);
 
 	(void)im_ptr;
-	ft_draw_line(gl_ptr, 10, 10, SIZE_X, SIZE_Y, 0xFFFFFF);
+	// ft_draw_line(gl_ptr, 10, 10, SIZE_X, SIZE_Y, 0xFFFFFF);
 
 	mlx_loop_hook(gl_ptr->mlx_ptr, &handle_nothing, gl_ptr);
 	mlx_hook((*gl_ptr).win_ptr, KeyPress, KeyPressMask, &key, gl_ptr);

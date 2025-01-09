@@ -12,30 +12,25 @@
 
 #include "FDF.h"
 
-int	connection_init(char *map, g_data *data_ptr, i_data *img_ptr)
+
+int	connection_init(char *map, g_data *data_ptr)
 {
 	char	*title;
 
-	// title = ft_strjoin("aouaalla's FDF : ", map);
-	title = map;
+	title = ft_strjoin("aouaalla's FDF : ", map);
 	data_ptr->mlx_ptr = mlx_init();
 	if (!data_ptr->mlx_ptr)
 		return (0);
 	data_ptr->win_ptr = mlx_new_window(data_ptr->mlx_ptr, SIZE_X, SIZE_Y, title);
-	if (!img_ptr->mlx_img)
+	if (!data_ptr->win_ptr)
 		return (0);
-	img_ptr->mlx_img = mlx_new_image(data_ptr->mlx_ptr, SIZE_X, SIZE_Y);
-	if (!img_ptr->mlx_img)
+	data_ptr->img.mlx_img = mlx_new_image(data_ptr->mlx_ptr, SIZE_X, SIZE_Y);
+	if (!data_ptr->img.mlx_img)
 		return (0);
-	img_ptr->addr = mlx_get_data_addr(img_ptr->mlx_img, &img_ptr->bp_pixel,
-			&img_ptr->line_len, &img_ptr->endian);
-	if (!img_ptr->addr)
+	data_ptr->img.addr = mlx_get_data_addr(data_ptr->img.mlx_img, &data_ptr->img.bp_pixel,
+			&data_ptr->img.line_len, &data_ptr->img.endian);
+	if (!data_ptr->img.addr)
 		return (0);
-	return (0);
-}
-
-int handle_nothing(void)
-{
 	return (0);
 }
 
@@ -44,6 +39,7 @@ int	key_handle(int keysysm, g_data *gl_ptr)
 	if (keysysm == XK_Escape)
 	{
 		mlx_destroy_window(gl_ptr->mlx_ptr, gl_ptr->win_ptr);
+		gl_ptr->win_ptr = NULL;
 		printf("BYE!");
 	}
 	return (0);
@@ -52,7 +48,7 @@ int	key_handle(int keysysm, g_data *gl_ptr)
 void pixel_put(g_data *gl_ptr, int x, int y, int color)
 {
     char *pxl;
-    
+
     if (x >= 0 && x < SIZE_X && y >= 0 && y < SIZE_Y)
     {
         pxl = gl_ptr->img.addr + (y * gl_ptr->img.line_len + x * (gl_ptr->img.bp_pixel / 8));
@@ -60,57 +56,82 @@ void pixel_put(g_data *gl_ptr, int x, int y, int color)
     }
 }
 
-void ft_draw_line(g_data *gl_ptr, int x1, int y1, int x2, int y2, int color)
+void	zoom_in(float x, float y)
 {
-    int i;
-    int step;
-    int delta_x;
-    int delta_y;
-    
-    delta_x = x2 - x1;
-    delta_y = y2 - y1;
-    if (abs((int)delta_x) >= abs((int)delta_y))
-        step = abs((int)delta_x);
-    else
-        step = abs((int)delta_y);
-    delta_x /= step;
-    delta_y /= step;
-    i = 0;
-    while (i < step)
-    {
-        pixel_put(gl_ptr, x1, y1, color);
-        x1 += delta_x;
-        y1 += delta_y;
-        i++;
-    }
+
+}
+
+void	line_draw(float x, float y, float x1, float y1, g_data *gl_ptr)
+{
+	float	dx;
+	float	dy;
+	float	step;
+
+	zoom_in(x, y, gl_ptr);
+	dx = x1 -x;
+	dy = y1 - y;
+	// which one is greater
+	if (abs((int)dx) > ((int)dy))
+		step = abs((int)dx);
+	else
+		step = abs((int)dy);
+	dx /= step;
+	dy /= step;
+	while ((int)step)
+	{
+		pixel_put(gl_ptr, x, y, 0xFFFFFF);
+		x += dx;
+		y += dy;
+		--step;
+	}
+}
+
+
+int	draw(g_data *gl_ptr)
+{
+	int	i;
+	int	j;
+
+	if (!gl_ptr->win_ptr)
+		return (0);
+	i = 0;
+	while (i < gl_ptr->height)
+	{
+		j = 0;
+		while (j < gl_ptr->width)
+		{
+			line_draw(j, i, j + 1, i, gl_ptr);	
+			line_draw(j, i, j, i + 1, gl_ptr);	
+			j++;
+		}
+		i++;
+	}
+	// pixel_put(gl_ptr, SIZE_X/2, SIZE_Y/2, 0xFFFFFF);
+	mlx_put_image_to_window(gl_ptr->mlx_ptr, gl_ptr->win_ptr, gl_ptr->img.mlx_img, 0, 0);
+	return (0);
+}
+
+void	hooks(g_data *gl_ptr)
+{
+	mlx_hook(gl_ptr->win_ptr, KeyPress, KeyPressMask, &key_handle, gl_ptr);
+
 }
 
 int main(int argc, char **argv)
 {
 	g_data	gl;
-	i_data	im;
 
 	if (argc < 1)
 		return (write(2, "Invalid number of arguments!", 28), 0);
-	// file_check(argv[1], &gl);
-	connection_init(argv[1], &gl, &im);
-	ft_draw_line(&gl, 0, 0, SIZE_X, SIZE_Y, 0xFFFFFF);
-	mlx_loop_hook(gl.mlx_ptr, &handle_nothing, &gl);
-	mlx_hook(gl.win_ptr, KeyPress, KeyPressMask, &key_handle, &gl);
+	file_check(argv[1], &gl);
+	connection_init(argv[1], &gl);
+
+	mlx_loop_hook(gl.mlx_ptr, &draw, &gl);
+	hooks(&gl);
+
 	mlx_loop(gl.mlx_ptr);
-	mlx_destroy_display(gl.mlx_ptr); // is it necessary! the behavior is fine without it.
+	mlx_destroy_image(gl.mlx_ptr, gl.img.mlx_img);
+    mlx_destroy_display(gl.mlx_ptr);
 	system("leaks a.out");
 	return (0);
 }
-
-// minilibx uses an extension which allows our program
-// to share images with the Xwindow server through shared
-// memory (/dev/shm)
-
-// mlx_get_data_addr returns the address of the images
-// as a simple array of pixels (char *)
-
-
-// with images instead of mlx_pixel_put, we will be able to
-// change the pixels directly using a pointer
-// (way faster)
