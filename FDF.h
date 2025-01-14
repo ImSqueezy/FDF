@@ -1,8 +1,8 @@
 #ifndef FDF_H
 # define FDF_H
 
-# define SIZE_X 1300
-# define SIZE_Y 1000
+# define SIZE_X 600
+# define SIZE_Y 300
 
 # include "Libft/libft.h"
 # include "get_next_line/get_next_line.h"
@@ -34,6 +34,8 @@ typedef struct global_data
 	int		zoom;
 	int		color;
 	i_data	img;
+	int		x_debug;
+	int		y_debug;
 }	g_data;
 
 int		connection_init(char *map, g_data *data_ptr); // << handle errors (print smth)

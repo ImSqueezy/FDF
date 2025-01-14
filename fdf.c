@@ -31,7 +31,7 @@ int	connection_init(char *map, g_data *data_ptr)
 			&data_ptr->img.line_len, &data_ptr->img.endian);
 	if (!data_ptr->img.addr)
 		return (0);
-	data_ptr->zoom = 30;	
+	data_ptr->zoom = 6;	
 	return (0);
 }
 
@@ -82,19 +82,51 @@ void pixel_put(g_data *gl_ptr, int x, int y, int color)
 
 void line_draw(int x0, int y0, int x1, int y1, g_data *gl_ptr)
 {
-   int dx =  abs(x1-x0), sx = x0<x1 ? 1 : -1;
-   int dy = -abs(y1-y0), sy = y0<y1 ? 1 : -1; 
-   int err = dx+dy, e2; /* error value e_xy */
- 
-   for(;;){  /* loop */
+	int	dx;
+	int	dy;
+	int	D;
+
+	dx = abs(x1 - x0);
+	dy = abs(y1 - y0);
+	D = 2*dy - dx;
+	while (x0 != x1)
+	{
 		pixel_put(gl_ptr, (x0 + SIZE_X/2) - (gl_ptr->width * gl_ptr->zoom)/2, (y0 + SIZE_Y/2) - (gl_ptr->height * gl_ptr->zoom)/2, 0xFFFFFF);
-    //   setPixel(x0,y0);
-      if (x0==x1 && y0==y1) break;
-      e2 = 2*err;
-      if (e2 >= dy) { err += dy; x0 += sx; } /* e_xy+e_x > 0 */
-      if (e2 <= dx) { err += dx; y0 += sy; } /* e_xy+e_y < 0 */
-   }
+		if (D < 0)
+			D = D + 2*dy;
+		else
+		{
+			D = D + 2*(dy - dx);
+			y0++;
+		}
+		x0++;
+	}
 }
+//    int dx =  abs(x1-x0), sx = x0<x1 ? 1 : -1;
+//    int dy = -abs(y1-y0), sy = y0<y1 ? 1 : -1; 
+//    int err = dx+dy, e2; /* error value e_xy */
+ 
+//    for(;;){  /* loop */
+// 		pixel_put(gl_ptr, (x0 + SIZE_X/2) - (gl_ptr->width * gl_ptr->zoom)/2, (y0 + SIZE_Y/2) - (gl_ptr->height * gl_ptr->zoom)/2, 0xFFFFFF);
+//     //   setPixel(x0,y0);
+//       if (x0==x1 && y0==y1) break;
+//       e2 = 2*err;
+//       if (e2 >= dy) { err += dy; x0 += sx; } /* e_xy+e_x > 0 */
+//       if (e2 <= dx) { err += dx; y0 += sy; } /* e_xy+e_y < 0 */
+//    }
+// }
+//    int dx =  abs(x1-x0), sx = x0<x1 ? 1 : -1;
+//    int dy = -abs(y1-y0), sy = y0<y1 ? 1 : -1; 
+//    int err = dx+dy, e2; /* error value e_xy */
+ 
+//    for(;;){  /* loop */
+// 		pixel_put(gl_ptr, (x0 + SIZE_X/2) - (gl_ptr->width * gl_ptr->zoom)/2, (y0 + SIZE_Y/2) - (gl_ptr->height * gl_ptr->zoom)/2, 0xFFFFFF);
+//     //   setPixel(x0,y0);
+//       if (x0==x1 && y0==y1) break;
+//       e2 = 2*err;
+//       if (e2 >= dy) { err += dy; x0 += sx; } /* e_xy+e_x > 0 */
+//       if (e2 <= dx) { err += dx; y0 += sy; } /* e_xy+e_y < 0 */
+//    }
 
 int	draw(g_data *gl_ptr)
 {
@@ -119,7 +151,6 @@ int	draw(g_data *gl_ptr)
 		}
 		i++;
 	}
-	// pixel_put(gl_ptr, SIZE_X/2, SIZE_Y/2, 0xFFFFFF);
 	mlx_put_image_to_window(gl_ptr->mlx_ptr, gl_ptr->win_ptr, gl_ptr->img.mlx_img, 0, 0);
 	return (0);
 }
