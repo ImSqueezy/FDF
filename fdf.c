@@ -57,76 +57,42 @@ void pixel_put(g_data *gl_ptr, int x, int y, int color)
     }
 }
 
-// void	line_draw(float x, float y, float x1, float y1, g_data *gl_ptr)
-// {
-// 	float	dx;
-// 	float	dy;
-// 	float	step;
-
-// 	dx = x1 -x;
-// 	dy = y1 - y;
-// 	if (abs((int)dx) > ((int)dy))
-// 		step = abs((int)dx);
-// 	else
-// 		step = abs((int)dy);
-// 	dx /= step;
-// 	dy /= step;
-// 	while ((int)step)
-// 	{
-// 		pixel_put(gl_ptr, (x + SIZE_X/2) - (gl_ptr->width * gl_ptr->zoom)/2, (y + SIZE_Y/2) - (gl_ptr->height * gl_ptr->zoom)/2, 0xFFFFFF);
-// 		x += dx;
-// 		y += dy;
-// 		--step;
-// 	}
-// }
-
 void line_draw(int x0, int y0, int x1, int y1, g_data *gl_ptr)
 {
 	int	dx;
 	int	dy;
-	int	D;
+	int sx;
+	int sy;
+	int error;
+	int e2;
 
 	dx = abs(x1 - x0);
-	dy = abs(y1 - y0);
-	D = 2*dy - dx;
-	while (x0 != x1)
+	if (x0 < x1)
+		sx = 1;
+	else
+		sx = -1;
+	dy = -abs(y1 - y0);
+	if (y0 < y1)
+		sy = 1;
+	else
+		sy = -1;
+	error = dx + dy;
+	while (!(x0 == x1 && y0 == y1))
 	{
 		pixel_put(gl_ptr, (x0 + SIZE_X/2) - (gl_ptr->width * gl_ptr->zoom)/2, (y0 + SIZE_Y/2) - (gl_ptr->height * gl_ptr->zoom)/2, 0xFFFFFF);
-		if (D < 0)
-			D = D + 2*dy;
-		else
+		e2 = 2 * error;
+		if (e2 >= dy)
 		{
-			D = D + 2*(dy - dx);
-			y0++;
+			error += dy;
+			x0 += sx;
 		}
-		x0++;
+		else if (e2 <= dx)
+		{
+			error += dx;
+			y0 += sy;
+		}
 	}
 }
-//    int dx =  abs(x1-x0), sx = x0<x1 ? 1 : -1;
-//    int dy = -abs(y1-y0), sy = y0<y1 ? 1 : -1; 
-//    int err = dx+dy, e2; /* error value e_xy */
- 
-//    for(;;){  /* loop */
-// 		pixel_put(gl_ptr, (x0 + SIZE_X/2) - (gl_ptr->width * gl_ptr->zoom)/2, (y0 + SIZE_Y/2) - (gl_ptr->height * gl_ptr->zoom)/2, 0xFFFFFF);
-//     //   setPixel(x0,y0);
-//       if (x0==x1 && y0==y1) break;
-//       e2 = 2*err;
-//       if (e2 >= dy) { err += dy; x0 += sx; } /* e_xy+e_x > 0 */
-//       if (e2 <= dx) { err += dx; y0 += sy; } /* e_xy+e_y < 0 */
-//    }
-// }
-//    int dx =  abs(x1-x0), sx = x0<x1 ? 1 : -1;
-//    int dy = -abs(y1-y0), sy = y0<y1 ? 1 : -1; 
-//    int err = dx+dy, e2; /* error value e_xy */
- 
-//    for(;;){  /* loop */
-// 		pixel_put(gl_ptr, (x0 + SIZE_X/2) - (gl_ptr->width * gl_ptr->zoom)/2, (y0 + SIZE_Y/2) - (gl_ptr->height * gl_ptr->zoom)/2, 0xFFFFFF);
-//     //   setPixel(x0,y0);
-//       if (x0==x1 && y0==y1) break;
-//       e2 = 2*err;
-//       if (e2 >= dy) { err += dy; x0 += sx; } /* e_xy+e_x > 0 */
-//       if (e2 <= dx) { err += dx; y0 += sy; } /* e_xy+e_y < 0 */
-//    }
 
 int	draw(g_data *gl_ptr)
 {
@@ -158,7 +124,6 @@ int	draw(g_data *gl_ptr)
 void	hooks(g_data *gl_ptr)
 {
 	mlx_hook(gl_ptr->win_ptr, KeyPress, KeyPressMask, &key_handle, gl_ptr);
-
 }
 
 int main(int argc, char **argv)

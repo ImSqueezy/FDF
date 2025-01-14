@@ -24,6 +24,14 @@ typedef struct image_data
 	int		endian;
 }	i_data;
 
+typedef struct vectors
+{
+	int	x;
+	int	y;
+	int	z;
+	int	color;
+}	v_data;
+
 typedef struct global_data
 {
 	void	*mlx_ptr;
@@ -34,8 +42,7 @@ typedef struct global_data
 	int		zoom;
 	int		color;
 	i_data	img;
-	int		x_debug;
-	int		y_debug;
+	v_data	vector;
 }	g_data;
 
 int		connection_init(char *map, g_data *data_ptr); // << handle errors (print smth)
