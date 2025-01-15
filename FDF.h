@@ -24,13 +24,7 @@ typedef struct image_data
 	int		endian;
 }	i_data;
 
-typedef struct vectors
-{
-	int	x;
-	int	y;
-	int	z;
-	int	color;
-}	v_data;
+// typedef struct 
 
 typedef struct global_data
 {
@@ -42,16 +36,18 @@ typedef struct global_data
 	int		zoom;
 	int		color;
 	i_data	img;
-	v_data	vector;
 }	g_data;
 
 int		connection_init(char *map, g_data *data_ptr); // << handle errors (print smth)
 void	file_check(char	*file, g_data *data_ptr);
-void	fill_array(char *line, int **arr, g_data *data_ptr);
+void	fill_array(char *line, int *arr, g_data *data_ptr);
 void	get_map_data(char *filename, g_data *data_ptr);
 int		draw_onWin(g_data *gl_ptr, i_data *im_ptr);
 void	ft_draw_line(g_data *gl_ptr, int x1, int y1, int x2, int y2, int color);
 // int		pixel_put(i_data *img_ptr, int x, int y, int color);
 int		key(int keysysm, g_data *gl_ptr);
+
+
+unsigned int	ft_atoi_base(const char *str, const char *base);
 
 #endif

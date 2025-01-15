@@ -38,11 +38,18 @@ void	get_map_data(char *filename, g_data *data_ptr)
 	close(fd);
 }
 
-void	fill_array(char *line, int **arr, g_data *data_ptr)
+void	ft_print(char *p)
 {
-	static int		i;
-	int			j;
-	char					**line_splitted;
+	int i = -1;
+	while (p[++i])
+		printf("%c", p[i]);
+	// printf("\n");
+}
+
+void	fill_array(char *line, int *arr, g_data *data_ptr)
+{
+	int		j;
+	char	**line_splitted;
 
 	line_splitted = ft_split(line, ' ');
 	if (!line_splitted)
@@ -50,12 +57,11 @@ void	fill_array(char *line, int **arr, g_data *data_ptr)
 	j = 0;
 	while (j < (*data_ptr).width)
 	{
-		arr[i][j] = ft_atoi(line_splitted[j]);
+		arr[j] = ft_atoi(line_splitted[j]);
 		free(line_splitted[j]);
 		j++;
 	}
 	free(line_splitted);
-	i++;
 }
 
 void	file_check(char	*file, g_data *data_ptr)
@@ -80,8 +86,19 @@ void	file_check(char	*file, g_data *data_ptr)
 		(*data_ptr).array[i] = malloc((*data_ptr).width * sizeof(int));
 		if (!(*data_ptr).array)
 			write(2, "MALLOC FAILURE", 14);
-		fill_array(line, (*data_ptr).array, data_ptr);
+		fill_array(line, (*data_ptr).array[i], data_ptr);
 		i++;
 		free(line);
 	}
+}
+
+int main(int argc, char **argv)
+{
+	// printf("%s", ft_strchr("221", ','));
+	g_data	gl_v;
+
+	if (argc != 2)
+		return (printf("number of args isn't valid"), 0);
+	file_check(argv[1], &gl_v);
+	return (0);
 }

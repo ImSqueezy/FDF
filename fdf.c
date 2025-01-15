@@ -126,21 +126,21 @@ void	hooks(g_data *gl_ptr)
 	mlx_hook(gl_ptr->win_ptr, KeyPress, KeyPressMask, &key_handle, gl_ptr);
 }
 
-int main(int argc, char **argv)
-{
-	g_data	gl;
+// int main(int argc, char **argv)
+// {
+// 	g_data	gl;
 
-	if (argc < 1)
-		return (write(2, "Invalid number of arguments!", 28), 0);
-	file_check(argv[1], &gl);
-	connection_init(argv[1], &gl);
+// 	if (argc < 1)
+// 		return (write(2, "Invalid number of arguments!", 28), 0);
+// 	file_check(argv[1], &gl);
+// 	connection_init(argv[1], &gl);
 
-	mlx_loop_hook(gl.mlx_ptr, &draw, &gl);
-	hooks(&gl);
+// 	mlx_loop_hook(gl.mlx_ptr, &draw, &gl);
+// 	hooks(&gl);
 
-	mlx_loop(gl.mlx_ptr);
-	mlx_destroy_image(gl.mlx_ptr, gl.img.mlx_img);
-    mlx_destroy_display(gl.mlx_ptr);
-	system("leaks a.out");
-	return (0);
-}
+// 	mlx_loop(gl.mlx_ptr);
+// 	mlx_destroy_image(gl.mlx_ptr, gl.img.mlx_img);
+//     mlx_destroy_display(gl.mlx_ptr);
+// 	system("leaks a.out");
+// 	return (0);
+// }
