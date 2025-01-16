@@ -12,7 +12,7 @@ LIBFT = Libft/libft.a
 
 LIB_MLX = minilibx-linux/libmlx_Linux.a
 
-LIBRARIES = $(ARCHIVE) $(LIBFT) $(LIB_MLX) -lXext -lX11
+LIBRARIES = $(ARCHIVE) $(LIBFT) $(LIB_MLX) -lXext -lX11 -lm
 COMPILE = cc $(FLAGS)
 
 all: $(NAME)

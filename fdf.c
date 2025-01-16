@@ -30,26 +30,15 @@ int	connection_init(char *map, t_gl *data_ptr)
 			&data_ptr->img.line_len, &data_ptr->img.endian);
 	if (!data_ptr->img.addr)
 		return (0);
-	data_ptr->zoom = 6;	
+	data_ptr->zoom = 30;	
 	return (0);
 }
 
-void	isometric(int *x, int *y, int z)
-{
-	int tmp;
-
-	tmp = *x;
-	float ang = 0.523599;
-	*x = (tmp - *y) * cos(ang);
-	*y = (tmp + *y) * sin(ang) - z;
-}
 
 int	draw(t_gl *gl_ptr)
 {
 	int	i;
 	int	j;
-	int x;
-	int y;
 
 	if (!gl_ptr->win_ptr)
 		return (0);
@@ -59,20 +48,16 @@ int	draw(t_gl *gl_ptr)
 		j = -1;
 		while (++j < gl_ptr->width)
 		{
-			x = i;
-			y = j;
-			isometric(&x, &y, gl_ptr->map[i][j].z);
 			if (j != gl_ptr->width - 1)
-				line_draw((t_coor){j *gl_ptr->zoom,
-				i * gl_ptr->zoom, (j + 1) * gl_ptr->zoom,
-				i * gl_ptr->zoom}, gl_ptr);
+				line_draw((t_coor){j, i, (j + 1), i, gl_ptr->map[i][j].color},
+				gl_ptr);
 			if (i != gl_ptr->height - 1)
-				line_draw((t_coor){j * gl_ptr->zoom,
-				i * gl_ptr->zoom, j * gl_ptr->zoom,
-				(i + 1) * gl_ptr->zoom}, gl_ptr);
+				line_draw((t_coor){j, i, j, (i + 1), gl_ptr->map[i][j].color},
+				gl_ptr);
 		}
 	}
-	mlx_put_image_to_window(gl_ptr->mlx_ptr, gl_ptr->win_ptr, gl_ptr->img.mlx_img, 0, 0);
+	mlx_put_image_to_window(gl_ptr->mlx_ptr, gl_ptr->win_ptr,
+		gl_ptr->img.mlx_img, 0, 0);
 	return (0);
 }
 

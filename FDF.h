@@ -13,8 +13,8 @@
 #ifndef FDF_H
 # define FDF_H
 
-# define SIZE_X 600
-# define SIZE_Y 300
+# define SIZE_X 1200
+# define SIZE_Y 1200
 
 # include "Libft/libft.h"
 # include "get_next_line/get_next_line.h"
@@ -42,6 +42,7 @@ typedef struct coordinates
 	int y0;
 	int x1;
 	int y1;
+	int color;
 }	t_coor;
 
 typedef struct map_data

@@ -38,7 +38,7 @@ static void	draw(int x_step, int y_step, t_coor *c_ptr, t_gl *gl_ptr)
 	{
 		pixel_put(gl_ptr, (c_ptr->x0 + SIZE_X / 2)
 			- (gl_ptr->width * gl_ptr->zoom) / 2, (c_ptr->y0 + SIZE_Y / 2)
-			- (gl_ptr->height * gl_ptr->zoom) / 2, 0xFFFFFF);
+			- (gl_ptr->height * gl_ptr->zoom) / 2, c_ptr->color);
 		e2 = 2 * error;
 		if (e2 >= dy)
 		{
@@ -53,11 +53,31 @@ static void	draw(int x_step, int y_step, t_coor *c_ptr, t_gl *gl_ptr)
 	}
 }
 
+// void	isomet(t_coor *c_ptr, t_gl *gl_ptr)
+// {
+// 	int tmp;
+
+// 	tmp = c_ptr->x0;
+// 	float ang = 0.523599;
+// 	c_ptr->x0 = (tmp - c_ptr->y0) * cos(ang);
+// 	c_ptr->y0 = (tmp + c_ptr->y0) * sin(ang) - gl_ptr->map[c_ptr->x0][c_ptr->y0].z;
+// }
+
+void	zoom(t_coor *c_ptr, t_gl *gl_ptr)
+{
+	c_ptr->x0 *= gl_ptr->zoom;
+	c_ptr->y0 *= gl_ptr->zoom;
+	c_ptr->x1 *= gl_ptr->zoom;
+	c_ptr->y1 *= gl_ptr->zoom;
+}
+
 void	line_draw(t_coor c, t_gl *gl_ptr)
 {
 	int	xs;
 	int	ys;
 
+	// isomet(&c, gl_ptr);
+	zoom(&c, gl_ptr);
 	if (c.x0 < c.x1)
 		xs = 1;
 	else

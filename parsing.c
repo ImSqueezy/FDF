@@ -38,6 +38,14 @@ static void get_map_data(char *filename, t_gl *data_ptr)
 	close(fd);
 }
 
+void	z_color_definition(int z, int *color)
+{
+	if (z == 0)
+		*color = 0xFFFFFF;
+	if (z != 0)
+		*color = 0xFF0000;
+}
+
 static void	fill_matrix(char *line, t_map *arr, t_gl *data_ptr)
 {
 	int		i;
@@ -50,6 +58,7 @@ static void	fill_matrix(char *line, t_map *arr, t_gl *data_ptr)
 	i = 0;
 	while (i < (*data_ptr).width)
 	{
+		arr[i].z = ft_atoi(line_splitted[i]);
 		if (ft_strchr(line_splitted[i], ','))
 		{
 			j = 0;
@@ -58,7 +67,7 @@ static void	fill_matrix(char *line, t_map *arr, t_gl *data_ptr)
 			arr[i].color = ft_atoi_base(&line_splitted[i][j + 1],
 					"0123456789ABCDEF");
 		}
-		arr[i].z = ft_atoi(line_splitted[i]);
+		z_color_definition(arr[i].z, &arr[i].color);
 		free(line_splitted[i]);
 		i++;
 	}
