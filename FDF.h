@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   FDF.h                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aouaalla <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/16 12:53:33 by aouaalla          #+#    #+#             */
+/*   Updated: 2025/01/16 12:53:34 by aouaalla         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef FDF_H
 # define FDF_H
 
@@ -22,32 +34,37 @@ typedef struct image_data
 	int		bp_pixel;
 	int		line_len;
 	int		endian;
-}	i_data;
+}	t_img;
 
-// typedef struct 
+typedef struct coordinates
+{
+	int	x0;
+	int y0;
+	int x1;
+	int y1;
+}	t_coor;
+
+typedef struct map_data
+{
+	int	z;
+	int	color;
+}	t_map;
 
 typedef struct global_data
 {
-	void	*mlx_ptr;
-	void	*win_ptr;
-	int		**array;
 	int		width;
 	int		height;
+	void	*mlx_ptr;
+	void	*win_ptr;
 	int		zoom;
 	int		color;
-	i_data	img;
-}	g_data;
+	t_img	img;
+	t_map	**map;
+}	t_gl;
 
-int		connection_init(char *map, g_data *data_ptr); // << handle errors (print smth)
-void	file_check(char	*file, g_data *data_ptr);
-void	fill_array(char *line, int *arr, g_data *data_ptr);
-void	get_map_data(char *filename, g_data *data_ptr);
-int		draw_onWin(g_data *gl_ptr, i_data *im_ptr);
-void	ft_draw_line(g_data *gl_ptr, int x1, int y1, int x2, int y2, int color);
-// int		pixel_put(i_data *img_ptr, int x, int y, int color);
-int		key(int keysysm, g_data *gl_ptr);
-
-
+void	file_check(char	*file, t_gl *data_ptr);
+// void	line_draw(int x0, int y0, int x1, int y1, t_gl *gl_ptr);
+void	line_draw(t_coor c_ptr, t_gl *gl_ptr);
 unsigned int	ft_atoi_base(const char *str, const char *base);
 
 #endif

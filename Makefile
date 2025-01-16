@@ -4,7 +4,7 @@ ARCHIVE = warframe.a
 
 OBJ = fdf.o parsing.o \
 		get_next_line/get_next_line.o get_next_line/get_next_line_utils.o \
-		ft_atoi_base.o
+		ft_atoi_base.o drawing.o
 		
 FLAGS = -c -Wall -Wextra -Werror -g
 

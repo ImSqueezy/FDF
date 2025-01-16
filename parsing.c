@@ -12,7 +12,7 @@
 
 #include "FDF.h"
 
-void	get_map_data(char *filename, g_data *data_ptr)
+static void get_map_data(char *filename, t_gl *data_ptr)
 {
 	int		i;
 	int		fd;
@@ -38,44 +38,45 @@ void	get_map_data(char *filename, g_data *data_ptr)
 	close(fd);
 }
 
-void	ft_print(char *p)
+static void	fill_matrix(char *line, t_map *arr, t_gl *data_ptr)
 {
-	int i = -1;
-	while (p[++i])
-		printf("%c", p[i]);
-	// printf("\n");
-}
-
-void	fill_array(char *line, int *arr, g_data *data_ptr)
-{
+	int		i;
 	int		j;
 	char	**line_splitted;
 
 	line_splitted = ft_split(line, ' ');
 	if (!line_splitted)
 		return ;
-	j = 0;
-	while (j < (*data_ptr).width)
+	i = 0;
+	while (i < (*data_ptr).width)
 	{
-		arr[j] = ft_atoi(line_splitted[j]);
-		free(line_splitted[j]);
-		j++;
+		if (ft_strchr(line_splitted[i], ','))
+		{
+			j = 0;
+			while (line_splitted[i][j] && line_splitted[i][j] != ',')
+				j++;
+			arr[i].color = ft_atoi_base(&line_splitted[i][j + 1],
+					"0123456789ABCDEF");
+		}
+		arr[i].z = ft_atoi(line_splitted[i]);
+		free(line_splitted[i]);
+		i++;
 	}
 	free(line_splitted);
 }
 
-void	file_check(char	*file, g_data *data_ptr)
+void	file_check(char	*file, t_gl *data_ptr)
 {
 	int		i;
-	int					fd;
-	char				*line;
+	int		fd;
+	char	*line;
 
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
 		return ;
 	get_map_data(file, data_ptr);
-	(*data_ptr).array = malloc((*data_ptr).height * sizeof(int *));
-	if (!(*data_ptr).array)
+	(*data_ptr).map = malloc((*data_ptr).height * sizeof(t_map *));
+	if (!(*data_ptr).map)
 		write(2, "MALLOC FAILURE", 14);
 	i = 0;
 	while (i < (*data_ptr).height)
@@ -83,22 +84,35 @@ void	file_check(char	*file, g_data *data_ptr)
 		line = get_next_line(fd);
 		if (!line)
 			return ;
-		(*data_ptr).array[i] = malloc((*data_ptr).width * sizeof(int));
-		if (!(*data_ptr).array)
+		(*data_ptr).map[i] = malloc((*data_ptr).width * sizeof(t_map));
+		if (!(*data_ptr).map)
 			write(2, "MALLOC FAILURE", 14);
-		fill_array(line, (*data_ptr).array[i], data_ptr);
+		fill_matrix(line, (*data_ptr).map[i], data_ptr);
 		i++;
 		free(line);
 	}
 }
 
-int main(int argc, char **argv)
-{
-	// printf("%s", ft_strchr("221", ','));
-	g_data	gl_v;
-
-	if (argc != 2)
-		return (printf("number of args isn't valid"), 0);
-	file_check(argv[1], &gl_v);
-	return (0);
-}
+// int main(int argc, char **argv)
+// {
+// 	t_gl gl_v;
+// 	if (argc != 2)
+// 		printf("nbr of args isn't correct!");
+// 	file_check(argv[1], &gl_v);
+// 	// printf("%3d,%d", gl_v.map[0][0].z, gl_v.map[0][0].color);
+// 	// int j;
+// 	// int i = 0;
+// 	// while (i < gl_v.height)
+// 	// {
+// 	// 	j = 0;
+// 	// 	while (j < gl_v.width)
+// 	// 	{
+// 	// 		// printf("%3d,%d", gl_v.map[i][j].z, gl_v.map[i][j].color);
+// 	// 		printf("[%3d][%d],", i,j);
+// 	// 		j++;
+// 	// 	}
+// 	// 	printf("\n");
+// 	// 	i++;
+// 	// }
+// 	return (0);
+// }
