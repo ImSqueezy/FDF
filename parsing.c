@@ -38,14 +38,6 @@ static void get_map_data(char *filename, t_gl *data_ptr)
 	close(fd);
 }
 
-void	z_color_definition(int z, int *color)
-{
-	if (z == 0)
-		*color = 0xFFFFFF;
-	if (z != 0)
-		*color = 0xFF0000;
-}
-
 static void	fill_matrix(char *line, t_map *arr, t_gl *data_ptr)
 {
 	int		i;
@@ -67,7 +59,8 @@ static void	fill_matrix(char *line, t_map *arr, t_gl *data_ptr)
 			arr[i].color = ft_atoi_base(&line_splitted[i][j + 1],
 					"0123456789ABCDEF");
 		}
-		z_color_definition(arr[i].z, &arr[i].color);
+		else
+			arr[i].color = 0x0000FF;
 		free(line_splitted[i]);
 		i++;
 	}
@@ -108,20 +101,18 @@ void	file_check(char	*file, t_gl *data_ptr)
 // 	if (argc != 2)
 // 		printf("nbr of args isn't correct!");
 // 	file_check(argv[1], &gl_v);
-// 	// printf("%3d,%d", gl_v.map[0][0].z, gl_v.map[0][0].color);
-// 	// int j;
-// 	// int i = 0;
-// 	// while (i < gl_v.height)
-// 	// {
-// 	// 	j = 0;
-// 	// 	while (j < gl_v.width)
-// 	// 	{
-// 	// 		// printf("%3d,%d", gl_v.map[i][j].z, gl_v.map[i][j].color);
-// 	// 		printf("[%3d][%d],", i,j);
-// 	// 		j++;
-// 	// 	}
-// 	// 	printf("\n");
-// 	// 	i++;
-// 	// }
+// 	int j;
+// 	int i = 0;
+// 	while (i < gl_v.height)
+// 	{
+// 		j = 0;
+// 		while (j < gl_v.width)
+// 		{
+// 			printf("%3d,%d", gl_v.map[i][j].z, gl_v.map[i][j].color);
+// 			j++;
+// 		}
+// 		printf("\n");
+// 		i++;
+// 	}
 // 	return (0);
 // }

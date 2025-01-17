@@ -85,10 +85,8 @@ int main(int argc, char **argv)
 		return (write(2, "Invalid number of arguments!", 28), 0);
 	file_check(argv[1], &gl);
 	connection_init(argv[1], &gl);
-
 	mlx_loop_hook(gl.mlx_ptr, &draw, &gl);
 	hooks(&gl);
-
 	mlx_loop(gl.mlx_ptr);
 	mlx_destroy_image(gl.mlx_ptr, gl.img.mlx_img);
     mlx_destroy_display(gl.mlx_ptr);
