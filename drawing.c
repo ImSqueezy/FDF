@@ -53,15 +53,14 @@ static void	draw(int x_step, int y_step, t_coor *c_ptr, t_gl *gl_ptr)
 	}
 }
 
-// void	isomet(t_coor *c_ptr, t_gl *gl_ptr)
-// {
-// 	int tmp;
+void	isomet(t_coor *c_ptr, t_gl *gl_ptr)
+{
+	float ang = 0.523599;
+	c_ptr->x0 = c_ptr->x0 * 1 + c_ptr->y0 * 0 + gl_ptr->map[c_ptr->y0][c_ptr->x0].z * 0;
+	c_ptr->y0 = (c_ptr->x0 * 0) + c_ptr->y0 * cos(ang) + gl_ptr->map[c_ptr->y0][c_ptr->x0].z * sin(ang);
+	gl_ptr->map[c_ptr->y0][c_ptr->x0].z = c_ptr->x0 * 0 + c_ptr->y0 * -sin(ang) + gl_ptr->map[c_ptr->y0][c_ptr->x0].z * cos(ang);
 
-// 	tmp = c_ptr->x0;
-// 	float ang = 0.523599;
-// 	c_ptr->x0 = (tmp - c_ptr->y0) * cos(ang);
-// 	c_ptr->y0 = (tmp + c_ptr->y0) * sin(ang) - gl_ptr->map[c_ptr->x0][c_ptr->y0].z;
-// }
+}
 
 void	zoom(t_coor *c_ptr, t_gl *gl_ptr)
 {
@@ -76,7 +75,7 @@ void	line_draw(t_coor c, t_gl *gl_ptr)
 	int	xs;
 	int	ys;
 
-	// isomet(&c, gl_ptr);
+	isomet(&c, gl_ptr);
 	zoom(&c, gl_ptr);
 	if (c.x0 < c.x1)
 		xs = 1;
