@@ -30,7 +30,10 @@ int	connection_init(char *map, t_gl *data_ptr)
 			&data_ptr->img.line_len, &data_ptr->img.endian);
 	if (!data_ptr->img.addr)
 		return (0);
-	data_ptr->zoom = 30;	
+	if (SIZE_X / data_ptr->width/2 > SIZE_Y / data_ptr->height/2)
+		data_ptr->zoom = SIZE_X / data_ptr->width/2;
+	else
+		data_ptr->zoom = SIZE_Y / data_ptr->height/2;
 	return (0);
 }
 
@@ -69,6 +72,7 @@ int	key_handle(int keysysm, t_gl *gl_ptr)
 		gl_ptr->win_ptr = NULL;
 		printf("WINDOW CLOSED!");
 	}
+	// printf("%d\n", keysysm);
 	return (0);
 }
 
@@ -83,9 +87,11 @@ int main(int argc, char **argv)
 
 	if (argc < 1)
 		return (write(2, "Invalid number of arguments!", 28), 0);
-	file_check(argv[1], &gl);
+	if (!file_check(argv[1], &gl))
+		return (0);
 	connection_init(argv[1], &gl);
-	mlx_loop_hook(gl.mlx_ptr, &draw, &gl);
+	draw(&gl);
+	mlx_loop_hook(gl.mlx_ptr, &key_handle, &gl);
 	hooks(&gl);
 	mlx_loop(gl.mlx_ptr);
 	mlx_destroy_image(gl.mlx_ptr, gl.img.mlx_img);

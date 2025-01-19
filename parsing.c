@@ -12,7 +12,7 @@
 
 #include "FDF.h"
 
-static void get_map_data(char *filename, t_gl *data_ptr)
+static void	get_map_data(char *filename, t_gl *data_ptr)
 {
 	int		i;
 	int		fd;
@@ -60,14 +60,14 @@ static void	fill_matrix(char *line, t_map *arr, t_gl *data_ptr)
 					"0123456789ABCDEF");
 		}
 		else
-			arr[i].color = 0x0000FF;
+			arr[i].color = 0x00ff00;
 		free(line_splitted[i]);
 		i++;
 	}
 	free(line_splitted);
 }
 
-void	file_check(char	*file, t_gl *data_ptr)
+int	file_check(char	*file, t_gl *data_ptr)
 {
 	int		i;
 	int		fd;
@@ -75,44 +75,23 @@ void	file_check(char	*file, t_gl *data_ptr)
 
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
-		return ;
+		return (perror("open"), 0);
 	get_map_data(file, data_ptr);
 	(*data_ptr).map = malloc((*data_ptr).height * sizeof(t_map *));
 	if (!(*data_ptr).map)
-		write(2, "MALLOC FAILURE", 14);
+		return (write(2, "error: malloc failure!", 22), 0);
 	i = 0;
 	while (i < (*data_ptr).height)
 	{
 		line = get_next_line(fd);
 		if (!line)
-			return ;
+			return (0);
 		(*data_ptr).map[i] = malloc((*data_ptr).width * sizeof(t_map));
 		if (!(*data_ptr).map)
-			write(2, "MALLOC FAILURE", 14);
+			return (write(2, "error: malloc failure!", 22), 0);
 		fill_matrix(line, (*data_ptr).map[i], data_ptr);
 		i++;
 		free(line);
 	}
+	return (1);
 }
-
-// int main(int argc, char **argv)
-// {
-// 	t_gl gl_v;
-// 	if (argc != 2)
-// 		printf("nbr of args isn't correct!");
-// 	file_check(argv[1], &gl_v);
-// 	int j;
-// 	int i = 0;
-// 	while (i < gl_v.height)
-// 	{
-// 		j = 0;
-// 		while (j < gl_v.width)
-// 		{
-// 			printf("%3d,%d", gl_v.map[i][j].z, gl_v.map[i][j].color);
-// 			j++;
-// 		}
-// 		printf("\n");
-// 		i++;
-// 	}
-// 	return (0);
-// }
