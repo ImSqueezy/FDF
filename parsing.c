@@ -112,8 +112,6 @@ int	file_check(char	*file, int fd, t_gl *data_ptr)
 	int		i;
 	char	*line;
 
-	if (fd < 0)
-		return (perror("open"), 1);
 	if (get_map_data(file, data_ptr))
 		return (1);
 	data_ptr->width = data_ptr->map_width[1].width;
@@ -134,3 +132,18 @@ int	file_check(char	*file, int fd, t_gl *data_ptr)
 	}
 	return (0);
 }
+
+// int main(int argc, char **argv)
+// {
+// 	t_gl	gl;
+// 	int		fd;
+
+// 	if (argc != 2)
+// 		return (printf("invalid args"), 0);
+// 	fd = open(argv[1], O_RDONLY);
+// 	if (fd < 0)
+// 		return (perror("open"), 0);
+// 	printf("%d\n", file_check(argv[1], fd, &gl));
+// 	printf("widht %d and height %d\n", gl.width, gl.height);
+// 	return (0);
+// }

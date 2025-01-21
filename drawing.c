@@ -55,7 +55,7 @@ void	isomet(int *x, int *y, int z, t_gl *gl_ptr)
 {
 	float	ang;
 
-	ang = 0.5;
+	ang = 0.9;
 	*x = (*x * gl_ptr->zoom) - (gl_ptr->width/2 * gl_ptr->zoom);
 	*y = (*y * gl_ptr->zoom) - (gl_ptr->height/2 * gl_ptr->zoom);
 	z *= gl_ptr->zoom;
