@@ -49,6 +49,7 @@ typedef struct map_data
 {
 	int z;
 	int color;
+	int	width;
 } t_map;
 
 typedef struct global_data
@@ -61,11 +62,13 @@ typedef struct global_data
 	int color;
 	t_img img;
 	t_map **map;
+	t_map *map_width;
 } t_gl;
 
-int file_check(char *file, t_gl *data_ptr);
+int file_check(char *file, int fd, t_gl *data_ptr);
 // void	line_draw(int x0, int y0, int x1, int y1, t_gl *gl_ptr);
 void line_draw(t_coor c_ptr, t_gl *gl_ptr);
 unsigned int ft_atoi_base(const char *str, const char *base);
 
 #endif
+
