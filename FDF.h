@@ -13,8 +13,8 @@
 #ifndef FDF_H
 #define FDF_H
 
-#define SIZE_X 1200
-#define SIZE_Y 1200
+#define SIZE_X 600
+#define SIZE_Y 300
 
 #include "Libft/libft.h"
 #include "get_next_line/get_next_line.h"
@@ -36,20 +36,22 @@ typedef struct image_data
 	int endian;
 } t_img;
 
-typedef struct coordinates
-{
-	int x0;
-	int y0;
-	int x1;
-	int y1;
-	int color;
-} t_coor;
+// typedef struct coordinates
+// {
+// 	int x0;
+// 	int y0;
+// 	int x1;
+// 	int y1;
+// 	int color;
+// } t_coor;
 
 typedef struct map_data
 {
-	int z;
-	int color;
-	int	width;
+	int		width;
+	int		x;
+	int		y;
+	int		z;
+	int		color;
 } t_map;
 
 typedef struct global_data
@@ -67,7 +69,7 @@ typedef struct global_data
 
 int file_check(char *file, int fd, t_gl *data_ptr);
 // void	line_draw(int x0, int y0, int x1, int y1, t_gl *gl_ptr);
-void line_draw(t_coor c_ptr, t_gl *gl_ptr);
+// void line_draw(t_cr c_ptr, t_gl *gl_ptr);
 unsigned int ft_atoi_base(const char *str, const char *base);
 
 #endif
