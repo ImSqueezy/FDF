@@ -29,18 +29,34 @@ int	connection_init(char *map, t_gl *gl_ptr)
 	gl_ptr->img.addr = mlx_get_data_addr(gl_ptr->img.mlx_img,
 			&gl_ptr->img.bp_pixel, &gl_ptr->img.line_len, &gl_ptr->img.endian);
 	if (!gl_ptr->img.addr)
-		return (0);
-	if (SIZE_X / gl_ptr->width/2 < SIZE_Y / gl_ptr->height/2)
+		return (0);;
+}
+
+int	key_handle(int keysysm, t_gl *gl_ptr)
+{
+	if (keysysm == XK_Escape)
 	{
-		gl_ptr->zoom = SIZE_X / gl_ptr->width/2;
-		if (gl_ptr->zoom > 50)
-			gl_ptr->zoom = 1;
+		mlx_destroy_window(gl_ptr->mlx_ptr, gl_ptr->win_ptr);
+		gl_ptr->win_ptr = NULL;
+		printf("WINDOW CLOSED!\n");
+		// mlx_loop_end(gl_ptr->mlx_ptr);
 	}
 	else
-		gl_ptr->zoom = SIZE_Y / gl_ptr->height/2;
+		printf("%d\n", keysysm);
 	return (0);
 }
 
+int	handle_no_event(void *data)
+{
+    return (0);
+}
+
+int	hooks(t_gl *gl_ptr)
+{
+	mlx_loop_hook(gl_ptr->mlx_ptr, &handle_no_event, &gl_ptr);
+	mlx_hook(gl_ptr->win_ptr, KeyPress, KeyPressMask, &key_handle, gl_ptr);
+	return (0);
+}
 
 int	draw(t_gl *gl_ptr)
 {
@@ -56,33 +72,14 @@ int	draw(t_gl *gl_ptr)
 		while (++j < gl_ptr->width)
 		{
 			if (j != gl_ptr->width - 1)
-				line_draw((t_coor){j, i, (j + 1), i, gl_ptr->map[i][j].color},
-				gl_ptr);
+				line_draw(gl_ptr->map[i][j], gl_ptr->map[i + 1][j], gl_ptr);
 			if (i != gl_ptr->height - 1)
-				line_draw((t_coor){j, i, j, (i + 1), gl_ptr->map[i][j].color},
-				gl_ptr);
+				line_draw(gl_ptr->map[i][j], gl_ptr->map[i][j + 1], gl_ptr);
 		}
 	}
 	mlx_put_image_to_window(gl_ptr->mlx_ptr, gl_ptr->win_ptr,
 		gl_ptr->img.mlx_img, 0, 0);
 	return (0);
-}
-
-int	key_handle(int keysysm, t_gl *gl_ptr)
-{
-	if (keysysm == XK_Escape)
-	{
-		mlx_destroy_window(gl_ptr->mlx_ptr, gl_ptr->win_ptr);
-		gl_ptr->win_ptr = NULL;
-		printf("WINDOW CLOSED!");
-	}
-	// printf("%d\n", keysysm);
-	return (0);
-}
-
-void	hooks(t_gl *gl_ptr)
-{
-	mlx_hook(gl_ptr->win_ptr, KeyPress, KeyPressMask, &key_handle, gl_ptr);
 }
 
 int main(int argc, char **argv)
@@ -92,17 +89,12 @@ int main(int argc, char **argv)
 
 	if (argc != 2)
 		return (write(2, "error: Invalid number of args", 28), 1);
-	fd = open (argv[1], O_RDONLY);
-	if (fd < 0)
-		return (perror("open"), 1);
-	if (file_check(argv[1], fd, &gl))
+	if (file_check(argv[1], &gl))
 		return (0);
 	connection_init(argv[1], &gl);
-	draw(&gl);
-	mlx_loop_hook(gl.mlx_ptr, &key_handle, &gl);
 	hooks(&gl);
+	draw(&gl);
 	mlx_loop(gl.mlx_ptr);
-	mlx_destroy_image(gl.mlx_ptr, gl.img.mlx_img);
     mlx_destroy_display(gl.mlx_ptr);
 	return (0);
 }

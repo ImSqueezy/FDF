@@ -41,7 +41,7 @@ static int	get_map_width(int fd, t_gl *gl_ptr)
 	return (close(fd), 0);
 }
 
-void	fill_points(char *line, int x, t_map *arr)
+void	init_matrix_points(char *line, int x, t_map *arr)
 {
 	int	j;
 
@@ -52,8 +52,7 @@ void	fill_points(char *line, int x, t_map *arr)
 		j = 0;
 		while (line[j] && line[j] != ',')
 			j++;
-		arr[x].color = ft_atoi_base(&line[j + 1],
-				"0123456789abcdef");
+		arr[x].color = mini_atoi_base(&line[j + 1]);
 	}
 	else
 		arr[x].color = 0xffffff;
@@ -71,7 +70,7 @@ static void	fill_matrix(char *line, int y, t_map *arr, t_gl *data_ptr)
 	while (++x < (*data_ptr).width)
 	{
 		arr[x].y = y;
-		fill_points(line_splitted[x], x, arr);
+		init_matrix_points(line_splitted[x], x, arr);
 		free(line_splitted[x]);
 	}
 	free(line_splitted);
@@ -103,26 +102,30 @@ int	get_map_data(char *filename, t_gl *data_ptr)
 	return (0);
 }
 
-int	file_check(char	*file, int fd, t_gl *data_ptr)
+int	file_check(char	*file, t_gl *data)
 {
 	int		i;
+	int		fd;
 	char	*line;
 
-	if (get_map_data(file, data_ptr))
+	fd = open(file, O_RDONLY);
+	if (fd < 0)
+		return (perror("open"), 1);
+	if (get_map_data(file, data))
 		return (1);
-	(*data_ptr).map = malloc((*data_ptr).height * sizeof(t_map *));
-	if (!(*data_ptr).map)
+	(*data).map = malloc((*data).height * sizeof(t_map *));
+	if (!(*data).map)
 		return (write(2, "error: malloc failure!", 22), 1);
 	i = -1;
-	while (++i < (*data_ptr).height)
+	while (++i < (*data).height)
 	{
 		line = get_next_line(fd);
 		if (!line)
 			return (1);
-		(*data_ptr).map[i] = malloc((*data_ptr).width * sizeof(t_map));
-		if (!(*data_ptr).map)
+		(*data).map[i] = malloc((*data).width * sizeof(t_map));
+		if (!(*data).map)
 			return (write(2, "error: malloc failure!", 22), 1);
-		fill_matrix(line, i, (*data_ptr).map[i], data_ptr);
+		fill_matrix(line, i, (*data).map[i], data);
 		free(line);
 	}
 	return (0);
@@ -131,20 +134,19 @@ int	file_check(char	*file, int fd, t_gl *data_ptr)
 // int main(int argc, char **argv)
 // {
 // 	t_gl	gl;
-// 	int		fd;
 
 // 	if (argc < 1)
 // 		return (printf("invalid args"), 0);
-// 	fd = open(argv[1], O_RDONLY);
-// 	if (fd < 0)
-// 		return (perror("open"), 0);
-// 	if (file_check(argv[1], fd, &gl))
+// 	if (file_check(argv[1], &gl))
 // 		printf("invalid\n");
-// 	// for (int i = 0; i < gl.height; i++)
+// 	// else
 // 	// {
-// 	// 	for (int j = 0; j < gl.width; j++)
-// 	// 		printf("%d", gl.map[i][j].z);
-// 	// 	printf("\n");
-// 	// // }
-// 	urn (0);
+// 	// 	for (int i = 0; i < gl.height; i++)
+// 	// 	{
+// 	// 		for (int j = 0; j < gl.width; j++)
+// 	// 			printf("%d ", gl.map[i][j].color);
+// 	// 		printf("\n");
+// 	// 	}
+// 	// }
+// 	return (0);
 // }
