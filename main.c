@@ -29,7 +29,8 @@ int	connection_init(char *map, t_gl *gl_ptr)
 	gl_ptr->img.addr = mlx_get_data_addr(gl_ptr->img.mlx_img,
 			&gl_ptr->img.bp_pixel, &gl_ptr->img.line_len, &gl_ptr->img.endian);
 	if (!gl_ptr->img.addr)
-		return (0);;
+		return (0);
+	return (0);
 }
 
 int	key_handle(int keysysm, t_gl *gl_ptr)
@@ -39,7 +40,6 @@ int	key_handle(int keysysm, t_gl *gl_ptr)
 		mlx_destroy_window(gl_ptr->mlx_ptr, gl_ptr->win_ptr);
 		gl_ptr->win_ptr = NULL;
 		printf("WINDOW CLOSED!\n");
-		// mlx_loop_end(gl_ptr->mlx_ptr);
 	}
 	else
 		printf("%d\n", keysysm);
@@ -71,10 +71,10 @@ int	draw(t_gl *gl_ptr)
 		j = -1;
 		while (++j < gl_ptr->width)
 		{
-			if (j != gl_ptr->width - 1)
-				line_draw(gl_ptr->map[i][j], gl_ptr->map[i + 1][j], gl_ptr);
-			if (i != gl_ptr->height - 1)
+			if (j < gl_ptr->width - 1)
 				line_draw(gl_ptr->map[i][j], gl_ptr->map[i][j + 1], gl_ptr);
+			if (i < gl_ptr->height - 1)
+				line_draw(gl_ptr->map[i][j], gl_ptr->map[i + 1][j], gl_ptr);
 		}
 	}
 	mlx_put_image_to_window(gl_ptr->mlx_ptr, gl_ptr->win_ptr,
@@ -92,8 +92,11 @@ int main(int argc, char **argv)
 	if (file_check(argv[1], &gl))
 		return (0);
 	connection_init(argv[1], &gl);
+	t_map p1 = gl.map[0][0];
+	t_map p2 = gl.map[0][1];
 	hooks(&gl);
-	draw(&gl);
+	pixel_put(&gl, p1.x, p2.y, 0xffffff);
+	// draw(&gl);
 	mlx_loop(gl.mlx_ptr);
     mlx_destroy_display(gl.mlx_ptr);
 	return (0);

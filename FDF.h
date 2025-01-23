@@ -13,8 +13,8 @@
 #ifndef FDF_H
 #define FDF_H
 
-#define SIZE_X 600
-#define SIZE_Y 300
+#define SIZE_X 1600
+#define SIZE_Y 1000
 
 #include "Libft/libft.h"
 #include "get_next_line/get_next_line.h"
@@ -70,6 +70,6 @@ int file_check(char *file, t_gl *data);
 // void line_draw(t_cr c_ptr, t_gl *gl_ptr);
 void	line_draw(t_map p1, t_map p2, t_gl *gl_ptr);
 int mini_atoi_base(char *color);
-
+void	pixel_put(t_gl *gl_ptr, int x, int y, int color);
 #endif
 
