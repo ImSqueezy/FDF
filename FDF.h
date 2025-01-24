@@ -29,11 +29,11 @@
 
 typedef struct image_data
 {
-	void *mlx_img;
-	char *addr;
-	int bp_pixel;
-	int line_len;
-	int endian;
+	void	*mlx_img;
+	char	*addr;
+	int		bp_pixel;
+	int		line_len;
+	int		endian;
 }	t_img;
 
 typedef struct point
@@ -54,14 +54,15 @@ typedef struct map_data
 
 typedef struct global_data
 {
-	int width;
-	int height;
-	void *mlx_ptr;
-	void *win_ptr;
-	int zoom;
-	int color;
-	t_img img;
-	t_map **map;
+	int		width;
+	int		height;
+	int		z_high;
+	int 	z_min;
+	void	*mlx_ptr;
+	void	*win_ptr;
+	int		zoom;
+	t_img	img;
+	t_map	**map;
 }	t_gl;
 
 int		file_check(char *file, t_gl *data);
@@ -71,7 +72,7 @@ void	pixel_put(t_gl *gl_ptr, int x, int y, int color);
 int		draw(t_gl *gl_ptr);
 
 
-// hooks
 int		hooks(t_gl *gl_ptr);
+
 #endif
 
