@@ -33,71 +33,37 @@ int	connection_init(char *map, t_gl *gl_ptr)
 	return (0);
 }
 
-int	key_handle(int keysysm, t_gl *gl_ptr)
-{
-	if (keysysm == XK_Escape)
-	{
-		mlx_destroy_window(gl_ptr->mlx_ptr, gl_ptr->win_ptr);
-		gl_ptr->win_ptr = NULL;
-		printf("WINDOW CLOSED!\n");
-	}
-	else
-		printf("%d\n", keysysm);
-	return (0);
-}
+// int main(int argc, char **argv)
+// {
+// 	int		fd;
+// 	t_gl	gl;
 
-int	handle_no_event(void *data)
-{
-    return (0);
-}
-
-int	hooks(t_gl *gl_ptr)
-{
-	mlx_loop_hook(gl_ptr->mlx_ptr, &handle_no_event, &gl_ptr);
-	mlx_hook(gl_ptr->win_ptr, KeyPress, KeyPressMask, &key_handle, gl_ptr);
-	return (0);
-}
-
-int	draw(t_gl *gl_ptr)
-{
-	int	i;
-	int	j;
-
-	if (!gl_ptr->win_ptr)
-		return (0);
-	i = -1;
-	while (++i < gl_ptr->height)
-	{
-		j = -1;
-		while (++j < gl_ptr->width)
-		{
-			if (j < gl_ptr->width - 1)
-				line_draw(gl_ptr->map[i][j], gl_ptr->map[i][j + 1], gl_ptr);
-			if (i < gl_ptr->height - 1)
-				line_draw(gl_ptr->map[i][j], gl_ptr->map[i + 1][j], gl_ptr);
-		}
-	}
-	mlx_put_image_to_window(gl_ptr->mlx_ptr, gl_ptr->win_ptr,
-		gl_ptr->img.mlx_img, 0, 0);
-	return (0);
-}
+// 	if (argc != 2)
+// 		return (write(2, "error: Invalid number of args", 28), 1);
+// 	if (!file_check(argv[1], &gl))
+// 		return (0);
+// 	// printf("here");
+// 	// connection_init(argv[1], &gl);
+// 	// hooks(&gl);
+// 	// draw(&gl);
+// 	// mlx_loop(gl.mlx_ptr);
+//     // mlx_destroy_display(gl.mlx_ptr);
+// 	return (0);
+// }
 
 int main(int argc, char **argv)
 {
-	int		fd;
 	t_gl	gl;
 
 	if (argc != 2)
-		return (write(2, "error: Invalid number of args", 28), 1);
-	if (file_check(argv[1], &gl))
-		return (0);
-	connection_init(argv[1], &gl);
-	t_map p1 = gl.map[0][0];
-	t_map p2 = gl.map[0][1];
-	hooks(&gl);
-	pixel_put(&gl, p1.x, p2.y, 0xffffff);
-	// draw(&gl);
-	mlx_loop(gl.mlx_ptr);
-    mlx_destroy_display(gl.mlx_ptr);
+		return (printf("args!"), 0);
+	int f = file_check(argv[1], &gl);
+	// printf("%d", f);
+	if (!file_check(argv[1], &gl))
+		return (1);
+	// printf("hello");
+	// if (!file_check(argv[1], &gl));
+	// 	return (0);
+	// printf("txt");
 	return (0);
 }

@@ -34,16 +34,15 @@ typedef struct image_data
 	int bp_pixel;
 	int line_len;
 	int endian;
-} t_img;
+}	t_img;
 
-// typedef struct coordinates
-// {
-// 	int x0;
-// 	int y0;
-// 	int x1;
-// 	int y1;
-// 	int color;
-// } t_coor;
+typedef struct point
+{
+	int	x;
+	int	z;
+	int	y;
+	int	color;
+}	t_point;
 
 typedef struct map_data
 {
@@ -51,7 +50,7 @@ typedef struct map_data
 	int		y;
 	int		z;
 	int		color;
-} t_map;
+}	t_map;
 
 typedef struct global_data
 {
@@ -63,13 +62,16 @@ typedef struct global_data
 	int color;
 	t_img img;
 	t_map **map;
-} t_gl;
+}	t_gl;
 
-int file_check(char *file, t_gl *data);
-// void	line_draw(int x0, int y0, int x1, int y1, t_gl *gl_ptr);
-// void line_draw(t_cr c_ptr, t_gl *gl_ptr);
-void	line_draw(t_map p1, t_map p2, t_gl *gl_ptr);
-int mini_atoi_base(char *color);
+int		file_check(char *file, t_gl *data);
+void	line_draw(t_point p1, t_point p2, t_gl *gl_ptr);
+int		mini_atoi_base(char *color);
 void	pixel_put(t_gl *gl_ptr, int x, int y, int color);
+int		draw(t_gl *gl_ptr);
+
+
+// hooks
+int		hooks(t_gl *gl_ptr);
 #endif
 
