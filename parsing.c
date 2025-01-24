@@ -24,7 +24,7 @@ static int	get_map_width(int fd, t_gl *gl_ptr)
 	while (line)
 	{
 		if (prev_width && gl_ptr->width != prev_width)
-			return (write(1, "error: invalid map!", 19), 0);
+			return (write(2, "error: invalid map!", 19), 0);
 		prev_width = gl_ptr->width;
 		width = 0;
 		i = -1;
@@ -39,6 +39,14 @@ static int	get_map_width(int fd, t_gl *gl_ptr)
 		line = get_next_line(fd);
 	}
 	return (close(fd), 1);
+}
+
+void	max_min_set(int z, t_gl *gl_ptr)
+{
+	if (z > gl_ptr->z_high)
+		gl_ptr->z_high = z;
+	if (z < gl_ptr->z_min)
+		gl_ptr->z_min = z;
 }
 
 void	init_matrix_points(char *line, int x, t_map *arr)
@@ -71,6 +79,7 @@ static void	fill_matrix(char *line, int y, t_map *arr, t_gl *data_ptr)
 	{
 		arr[x].y = y;
 		init_matrix_points(line_splitted[x], x, arr);
+		max_min_set(arr[x].z, data_ptr);
 		free(line_splitted[x]);
 	}
 	free(line_splitted);
@@ -83,6 +92,8 @@ int	get_map_data(char *filename, t_gl *data_ptr)
 
 	data_ptr->height = 0;
 	data_ptr->width = 0;
+	data_ptr->z_high = 0;
+	data_ptr->z_min = 0;
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 		return (perror("open"), 0);
@@ -97,7 +108,7 @@ int	get_map_data(char *filename, t_gl *data_ptr)
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 		return (perror("open"), 0);
-	if (get_map_width(fd, data_ptr))
+	if (!get_map_width(fd, data_ptr))
 		return (0);
 	return (1);
 }
@@ -110,24 +121,24 @@ int	file_check(char	*file, t_gl *data)
 
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
-		return (perror("open"), 0);
+		return (perror("open"), 1);
 	if (!get_map_data(file, data))
 		return (0);
-	// (*data).map = malloc((*data).height * sizeof(t_map *));
-	// if (!(*data).map)
-	// 	return (write(2, "error: malloc failure!", 22), 1);
-	// i = -1;
-	// while (++i < (*data).height)
-	// {
-	// 	line = get_next_line(fd);
-	// 	if (!line)
-	// 		return (1);
-	// 	(*data).map[i] = malloc((*data).width * sizeof(t_map));
-	// 	if (!(*data).map)
-	// 		return (write(2, "error: malloc failure!", 22), 1);
-	// 	fill_matrix(line, i, (*data).map[i], data);
-	// 	free(line);
-	// }
+	(*data).map = malloc((*data).height * sizeof(t_map *));
+	if (!(*data).map)
+		return (write(2, "error: malloc failure!", 22), 1);
+	i = -1;
+	while (++i < (*data).height)
+	{
+		line = get_next_line(fd);
+		if (!line)
+			return (1);
+		(*data).map[i] = malloc((*data).width * sizeof(t_map));
+		if (!(*data).map)
+			return (write(2, "error: malloc failure!", 22), 1);
+		fill_matrix(line, i, (*data).map[i], data);
+		free(line);
+	}
 	return (1);
 }
 
