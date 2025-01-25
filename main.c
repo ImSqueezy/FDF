@@ -42,7 +42,6 @@ int	connection_init(char *map, t_gl *gl_ptr)
 // 		return (write(2, "error: Invalid number of args", 28), 1);
 // 	if (!file_check(argv[1], &gl))
 // 		return (0);
-// 	// printf("here");
 // 	// connection_init(argv[1], &gl);
 // 	// hooks(&gl);
 // 	// draw(&gl);
@@ -57,13 +56,9 @@ int main(int argc, char **argv)
 
 	if (argc != 2)
 		return (printf("args!"), 0);
-	int f = file_check(argv[1], &gl);
-	// printf("%d", f);
 	if (!file_check(argv[1], &gl))
-		return (1);
-	// printf("hello");
-	// if (!file_check(argv[1], &gl));
-	// 	return (0);
-	// printf("txt");
+		return (0);
+	connection_init(argv[1], &gl);
+	// drawing
 	return (0);
 }
