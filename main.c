@@ -30,6 +30,7 @@ int	connection_init(char *map, t_gl *gl_ptr)
 			&gl_ptr->img.bp_pixel, &gl_ptr->img.line_len, &gl_ptr->img.endian);
 	if (!gl_ptr->img.addr)
 		return (0);
+	gl_ptr->zoom = 30;
 	return (0);
 }
 
@@ -50,15 +51,32 @@ int	connection_init(char *map, t_gl *gl_ptr)
 // 	return (0);
 // }
 
+int	key_handle(int keysysm, t_gl *gl_ptr)
+{
+	if (keysysm == XK_Escape)
+	{
+		mlx_destroy_window(gl_ptr->mlx_ptr, gl_ptr->win_ptr);
+		gl_ptr->win_ptr = NULL;
+		printf("WINDOW CLOSED!\n");
+	}
+	else
+		printf("%d\n", keysysm);
+	return (0);
+}
+
 int main(int argc, char **argv)
 {
 	t_gl	gl;
 
-	if (argc != 2)
+	if (argc < 1)
 		return (printf("args!"), 0);
 	if (!file_check(argv[1], &gl))
 		return (0);
 	connection_init(argv[1], &gl);
-	// drawing
+	mlx_loop_hook(gl.mlx_ptr, draw, &gl);
+	mlx_hook(gl.win_ptr, KeyPress, KeyPressMask, &key_handle, &gl);
+	mlx_loop(gl.mlx_ptr);
+	mlx_destroy_display(gl.mlx_ptr);
+	mlx_loop(gl.mlx_ptr);
 	return (0);
 }
