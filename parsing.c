@@ -121,12 +121,12 @@ int	file_check(char	*file, t_gl *data)
 
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
-		return (perror("open"), 1);
+		return (perror("open"), 0);
 	if (!get_map_data(file, data))
 		return (0);
 	(*data).map = malloc((*data).height * sizeof(t_map *));
 	if (!(*data).map)
-		return (write(2, "error: malloc failure!", 22), 1);
+		return (write(2, "error: malloc failure!", 22), 0);
 	i = -1;
 	while (++i < (*data).height)
 	{
@@ -135,7 +135,7 @@ int	file_check(char	*file, t_gl *data)
 			return (1);
 		(*data).map[i] = malloc((*data).width * sizeof(t_map));
 		if (!(*data).map)
-			return (write(2, "error: malloc failure!", 22), 1);
+			return (write(2, "error: malloc failure!", 22), 0);
 		fill_matrix(line, i, (*data).map[i], data);
 		free(line);
 	}
