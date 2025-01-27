@@ -1,6 +1,6 @@
 NAME = fdf 
 
-OBJS = main.o parsing.o utils.o drawing.o hooks.o \
+OBJS = main.o parsing.o utils.o drawing.o color_definition.o \
 	get_next_line/get_next_line.o get_next_line/get_next_line_utils.o \
 
 LIBFT_SRCS = $(wildcard Libft/*.c)
@@ -10,7 +10,7 @@ MLX_LIB = minilibx-linux/libmlx_Linux.a
 MLX_F = -lXext -lX11 -lm 
 
 FLAGS = -g
-# -Wall -Wextra -Werror 
+# -Wall -Wextra -Werror commented for later use
 COMPILE = cc $(FLAGS)
 
 $(NAME): $(LIBFT) $(OBJS)
