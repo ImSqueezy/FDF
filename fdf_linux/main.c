@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "FDF.h"
+
 void	connection_init(char *map, t_gl *gl_ptr)
 {
 	char	*title;
@@ -61,6 +63,5 @@ int main(int argc, char **argv)
 	mlx_hook(gl.win_ptr, 17, 0, &program_exit, &gl);
 	mlx_key_hook(gl.win_ptr, &key_handle, &gl);
 	mlx_loop(gl.mlx_ptr);
-	system("leaks a.out");
 	return (0);
 }
