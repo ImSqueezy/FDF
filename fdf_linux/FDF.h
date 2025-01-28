@@ -47,6 +47,13 @@ typedef struct map_data
 	int		color;
 }	t_map;
 
+typedef struct s_channels
+{
+	int	red;
+	int	green;
+	int	blue;
+}	t_channel;
+
 typedef struct global_data
 {
 	int		width;
