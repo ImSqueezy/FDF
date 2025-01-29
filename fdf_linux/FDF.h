@@ -16,7 +16,7 @@
 #define SIZE_X 1600
 #define SIZE_Y 1200
 #define MASK 255
-#define ISO_ANG 0.4
+#define ISO_ANG 0.523599
 #define BLACK 0x000000
 
 #include "Libft/libft.h"
@@ -54,6 +54,13 @@ typedef struct s_channels
 	int	blue;
 }	t_channel;
 
+typedef struct s_map_colors
+{
+	int		base_color;
+	int		high_altitude_color;
+	int		low_altitude_color;
+}	t_mc;
+
 typedef struct global_data
 {
 	int		width;
@@ -62,9 +69,11 @@ typedef struct global_data
 	int 	z_min;
 	void	*mlx_ptr;
 	void	*win_ptr;
-	int		zoom;
+	float		zoom;
 	int		iso;
+	int		colored;
 	t_img	img;
+	t_mc	mc;
 	t_map	**map;
 }	t_gl;
 
