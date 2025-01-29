@@ -49,15 +49,18 @@ void	max_min_set(int z, t_gl *gl_ptr)
 		gl_ptr->z_min = z;
 }
 
-void	init_matrix_points(char *line, int x, t_map *arr)
+void	init_matrix_points(char *line, int x, t_map *arr, t_gl *data)
 {
 	int	j;
 
+	data->mc.base_color = 0xBA8B02;
+	data->mc.high_altitude_color = 0xff0000;
+	data->mc.low_altitude_color = 0x00ff00;
 	arr[x].x = x;
 	arr[x].z = ft_atoi(line);
 	if (ft_strchr(line, ','))
 	{
-
+		data->colored = 1;
 		j = 0;
 		while (line[j] && line[j] != ',')
 			j++;
@@ -65,12 +68,13 @@ void	init_matrix_points(char *line, int x, t_map *arr)
 	}
 	else
 	{
+		data->colored = 0;
 		if (arr[x].z > 0)
-			arr[x].color = 0x181818;
+			arr[x].color = data->mc.high_altitude_color;
 		else if (arr[x].z == 0)
-			arr[x].color = 0xBA8B02;
+			arr[x].color = data->mc.base_color;
 		else
-			arr[x].color = 0x00ff00;
+			arr[x].color = data->mc.low_altitude_color;
 	}
 }
 
@@ -87,7 +91,7 @@ static void	fill_matrix(char *line, int y, t_map *arr, t_gl *data_ptr)
 	while (++x < (*data_ptr).width)
 	{
 		arr[x].y = y;
-		init_matrix_points(line_splitted[x], x, arr);
+		init_matrix_points(line_splitted[x], x, arr, data_ptr);
 		free(line_splitted[x]);
 	}
 	free(line_splitted);
