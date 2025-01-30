@@ -13,8 +13,8 @@
 #ifndef FDF_H
 #define FDF_H
 
-#define SIZE_X 700
-#define SIZE_Y 500
+#define SIZE_X 1500
+#define SIZE_Y 1100
 #define MASK 255
 #define ISO_ANG 0.523599
 #define BLACK 0x000000
@@ -61,20 +61,39 @@ typedef struct s_map_colors
 	int		low_altitude_color;
 }	t_mc;
 
+typedef struct s_camera
+{
+	float	z_alti;
+	float	x_scale;
+	float	y_scale;
+}	t_cam;
+
+
+typedef struct matrices
+{
+	float	x;
+	float	y;
+	float	z;
+}	t_mat;
+
 typedef struct global_data
 {
+	void	*mlx_ptr;
+	void	*win_ptr;
+	char	*title;
 	int		width;
 	int		height;
 	int		z_high;
 	int 	z_min;
-	void	*mlx_ptr;
-	void	*win_ptr;
-	float		zoom;
-	int		iso;
+	float	zoom;
 	int		colored;
+	int		iso;
+	int		bonus;
+	t_cam	cam;
 	t_img	img;
 	t_mc	mc;
 	t_map	**map;
+	t_mat	*mat;
 }	t_gl;
 
 void	file_check(char *file, t_gl *data);
@@ -86,5 +105,3 @@ int		linear_interpolation(t_map p1, t_map p2, int curr, int status);
 int		hooks(t_gl *gl_ptr);
 
 #endif
-
-
