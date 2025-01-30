@@ -12,18 +12,17 @@
 
 #include "FDF.h"
 
-void	pixel_put(t_gl *gl_ptr, int x, int y, int color)
+void	pixel_put(t_gl *data, int x, int y, int color)
 {
 	char	*pxl;
 
 	if (x >= 0 && x < SIZE_X && y >= 0 && y < SIZE_Y)
 	{
-		pxl = gl_ptr->img.addr + (y * gl_ptr->img.line_len
-				+ x * (gl_ptr->img.bp_pixel / 8));
+		pxl = data->img.addr + (y * data->img.line_len
+				+ x * (data->img.bp_pixel / 8));
 		*(unsigned int *)pxl = color;
 	}
 }
-
 void	isomet(t_map *p)
 {
 	int	tmp;
@@ -95,46 +94,6 @@ void	drawH(t_map p1, t_map p2, t_gl *data)
 	}
 }
 
-// int	which_step(int *change, int difference)
-// {
-// 	*change = difference;
-// 	if (*change > 0)
-// 		return (1);
-// 	return (-1);
-// }
-
-// void plotLine(t_map p1, t_map p2, t_gl *data)
-// {
-// 	int	run;
-// 	int	rise;
-// 	int x_step;
-// 	int y_step;
-// 	int	err;
-// 	int	e2;
-
-// 	x_step = which_step(&run, abs(p2.x - p1.x));
-// 	y_step = which_step(&rise, -abs(p2.y - p1.y));
-// 	err = run + rise;
-// 	// printf("here\n");
-// 	// printf("%d %d && %d %d\n", p1.x, p2.y, p1.y, p2.y);
-// 	while (p1.x != p2.x && p1.y != p2.y)
-// 	{
-// 		printf("%d\n", p1.x);
-// 		pixel_put(data, p1.x, p2.y, 0xffffff);
-// 		e2 = 2 * err;
-// 		if (e2 >= rise)
-// 		{
-// 			err += rise;
-// 			p1.x += x_step;
-// 		}
-// 		if (e2 <= run)
-// 		{
-// 			err += run;
-// 			p1.y += y_step;
-// 		}
-// 	}
-// }
-
 void plotLine(t_map p1, t_map p2, t_gl *gl_ptr)
 {
 	int	run;
@@ -147,21 +106,11 @@ void plotLine(t_map p1, t_map p2, t_gl *gl_ptr)
 	else
 		drawV(p1, p2, gl_ptr);
 }
-  
-t_map	scale(t_map p, t_gl *gl_ptr)
+
+t_map	scale(t_map p, t_gl *gl_ptr) // undone
 {
-	if (gl_ptr->iso == 0)
-	{
-		p.x = (p.x - gl_ptr->width/2) * gl_ptr->zoom + SIZE_X/2;
-		p.y = (p.y - gl_ptr->height/2) * gl_ptr->zoom + SIZE_Y/2;
-	}
-	else
-	{
-		p.x = (p.x - gl_ptr->width/2) * gl_ptr->zoom;
-		p.y = (p.y - gl_ptr->height/2) * gl_ptr->zoom;
-		p.z *= gl_ptr->zoom / 10;
-		isomet(&p);
-	}
+
+	projection();
 	return (p);
 }
 
@@ -180,6 +129,23 @@ void	background_filling(t_gl *data)
 			j++;
 		}
 		i++;
+	}
+}
+
+void	wireframe_instructions(t_gl *gl_ptr) // undone
+{
+	if (gl_ptr->iso)
+		mlx_string_put(gl_ptr->mlx_ptr, gl_ptr->win_ptr, SIZE_X/2 - 30, 30, 0xffffff, "ISOMETRIC VIEW");
+	else
+		mlx_string_put(gl_ptr->mlx_ptr, gl_ptr->win_ptr, SIZE_X/2 - 30, 30, 0xffffff, "ORTHO VIEW");
+	if (!gl_ptr->bonus)
+		mlx_string_put(gl_ptr->mlx_ptr, gl_ptr->win_ptr, 30, 30, 0xffffff, "TOGGLE BONUS: B");
+	else
+	{
+		mlx_string_put(gl_ptr->mlx_ptr, gl_ptr->win_ptr, 30, 30, 0xffffff, "TOGGLE PROJECTION VIEWS: T");
+		mlx_string_put(gl_ptr->mlx_ptr, gl_ptr->win_ptr, 30, 50, 0xffffff, "ZOOM MANIPULATION: - / +");
+		mlx_string_put(gl_ptr->mlx_ptr, gl_ptr->win_ptr, 30, 90, 0xffffff, "ALTITUDE MANIPULATION: J / K");
+		mlx_string_put(gl_ptr->mlx_ptr, gl_ptr->win_ptr, 30, 70, 0xffffff, "TRANSPARENT BASE: N");
 	}
 }
 
@@ -205,5 +171,6 @@ int	draw(t_gl *gl_ptr)
 	}
 	mlx_put_image_to_window(gl_ptr->mlx_ptr, gl_ptr->win_ptr,
 		gl_ptr->img.mlx_img, 0, 0);
+	wireframe_instructions(gl_ptr);
 	return (0);
 }
