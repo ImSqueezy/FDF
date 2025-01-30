@@ -45,7 +45,7 @@ void	max_min_set(int z, t_gl *gl_ptr)
 {
 	if (z > gl_ptr->z_high)
 		gl_ptr->z_high = z;
-	if (z < gl_ptr->z_min)
+	else if (z < gl_ptr->z_min)
 		gl_ptr->z_min = z;
 }
 
@@ -84,7 +84,6 @@ static void	fill_matrix(char *line, int y, t_map *arr, t_gl *data_ptr)
 	char	**line_splitted;
 
 	line_splitted = ft_split(line, ' ');
-	// max_min_set(arr[x].z, data_ptr); is this really needed?
 	if (!line_splitted)
 		return ;
 	x = -1;
@@ -92,6 +91,7 @@ static void	fill_matrix(char *line, int y, t_map *arr, t_gl *data_ptr)
 	{
 		arr[x].y = y;
 		init_matrix_points(line_splitted[x], x, arr, data_ptr);
+		max_min_set(arr[x].z, data_ptr);
 		free(line_splitted[x]);
 	}
 	free(line_splitted);
