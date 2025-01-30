@@ -13,8 +13,8 @@
 #ifndef FDF_H
 #define FDF_H
 
-#define SIZE_X 1600
-#define SIZE_Y 1200
+#define SIZE_X 700
+#define SIZE_Y 500
 #define MASK 255
 #define ISO_ANG 0.523599
 #define BLACK 0x000000

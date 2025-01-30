@@ -159,7 +159,7 @@ t_map	scale(t_map p, t_gl *gl_ptr)
 	{
 		p.x = (p.x - gl_ptr->width/2) * gl_ptr->zoom;
 		p.y = (p.y - gl_ptr->height/2) * gl_ptr->zoom;
-		p.z *= gl_ptr->zoom;
+		p.z *= gl_ptr->zoom / 10;
 		isomet(&p);
 	}
 	return (p);
