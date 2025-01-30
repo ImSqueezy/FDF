@@ -12,37 +12,60 @@
 
 #include "FDF.h"
 
-void	connection_init(char *map, t_gl *gl_ptr)
+void	init_matrices(t_gl *data)
 {
-	char	*title;
+	data->mat = malloc(3 * sizeof(t_mat));
+	if (!data->mat)
+	{
+		write(2, "error: memory allocation for matrices!");
+		exit(0);
+	}
 
-	title = ft_strjoin("aouaalla's FDF : ", map);
+}
+
+void	connection_init(char *map, t_gl *gl_ptr) // make errors for allocation failure
+{
+	char *tmp;
+
+	tmp = ft_strchr(map, '/');
+	gl_ptr->title = ft_strjoin("aouaalla's FDF : ", ++tmp);
 	gl_ptr->mlx_ptr = mlx_init();
 	if (!gl_ptr->mlx_ptr)
 		return ;
-	gl_ptr->win_ptr = mlx_new_window(gl_ptr->mlx_ptr, SIZE_X, SIZE_Y, title);
+	gl_ptr->win_ptr = mlx_new_window(gl_ptr->mlx_ptr, SIZE_X, SIZE_Y, gl_ptr->title);
 	if (!gl_ptr->win_ptr)
-		return ; // the mlx_ptr must be freed
+		return ;
 	gl_ptr->img.mlx_img = mlx_new_image(gl_ptr->mlx_ptr, SIZE_X, SIZE_Y);
 	if (!gl_ptr->img.mlx_img)
-		return ; // the win_ptr must be freed alongside mlx_ptr
+		return ;
 	gl_ptr->img.addr = mlx_get_data_addr(gl_ptr->img.mlx_img,
 			&gl_ptr->img.bp_pixel, &gl_ptr->img.line_len, &gl_ptr->img.endian);
 	if (!gl_ptr->img.addr)
-		return ; // destroy display, window, and image
-	gl_ptr->zoom = (SIZE_X / gl_ptr->width) / 3;
-	if (gl_ptr->zoom == 0)
-		gl_ptr->zoom = 0.52;	
-	gl_ptr->iso = 1;
+		return ;
+	
+	// gl_ptr->zoom = (SIZE_X / gl_ptr->width) / 3;
+	// if (gl_ptr->zoom == 0)
+	// 	gl_ptr->zoom = 0.52;	
+	// gl_ptr->iso = 1;
+	// gl_ptr->bonus = 0;
+	// gl_ptr->cam.z_alti = 1;
+	// gl_ptr->cam.x_scale = 0;
+	// gl_ptr->cam.y_scale = 0;
 }
+
 
 int program_exit(t_gl *gl_ptr)
 {
+	int	i;
+
 	mlx_destroy_image(gl_ptr->mlx_ptr, gl_ptr->img.mlx_img);
 	mlx_destroy_window(gl_ptr->mlx_ptr, gl_ptr->win_ptr);
 	gl_ptr->img.addr == NULL;
 	gl_ptr->win_ptr = NULL;
-	gl_ptr->mlx_ptr = NULL;
+	i = -1;
+	while (++i < gl_ptr->height)
+		free(gl_ptr->map[i]);
+	free(gl_ptr->map);
 	return (0);
 }
 
@@ -63,21 +86,11 @@ int	zoom_in_out(int code, t_gl *data)
 
 void z_manipulator(int *point, int *color, int code, t_gl *data)
 {
-	if (code == 107 && *point != 0)
-	{
-		if (*point != -1 && *point != 0)
-			*point += 1;
-		else
-			*point += 2;
-	}
-	else if (code == 106 && *point != 0)
-	{
-		if (*point != 1)
-			*point -= 1;
-		else
-			*point -= 2;
-	}
-	if (data->colored == 0)
+	if (code == 107)
+		data->cam.x_scale += 1;
+	else
+		data->cam.y_scale += 1;
+	if (!data->colored)
 	{
 		if (*point < 0)
 			*color = data->mc.low_altitude_color;
@@ -99,11 +112,8 @@ void	change_altitude(int code, t_gl *data)
 		j = -1;
 		while (++j < data->width)
 		{
-			if ((code == 106 || code == 107) && data->map[i][j].z != 0/*data->map[i][j].z != 0*/)
-			{
-				printf("%d\n", data->map[i][j].z);
+			if ((code == 106 || code == 107) && data->map[i][j].z != data->z_min)
 				z_manipulator(&data->map[i][j].z, &data->map[i][j].color, code, data);
-			}
 			else if (code == 110 && data->map[i][j].z == 0)
 			{
 				if (data->map[i][j].color == BLACK)
@@ -119,13 +129,9 @@ int	key_handle(int keysysm, t_gl *gl_ptr)
 {
 	if (keysysm == XK_Escape)
 		program_exit(gl_ptr);
-	if (keysysm == 61 || keysysm == 45) // does the zooming looks gay!
+	if (keysysm == 61 || keysysm == 45)
 		zoom_in_out(keysysm, gl_ptr);
-	if (keysysm == 107 || keysysm == 106 || 110) // bug needs to be fixed:
-									// the big map julia altitude changing translates the whole graph
-									// even the point that has the altitude of 0
-									// edit: the bug appears to be when the map has no 0 base altitude
-									// the minimum point starts from another value, julia from 1 as an example
+	if (keysysm == 107 || keysysm == 106 || keysysm == 110)
 		change_altitude(keysysm, gl_ptr);
 	if (keysysm == 116)
 	{
@@ -134,6 +140,8 @@ int	key_handle(int keysysm, t_gl *gl_ptr)
 		else
 			gl_ptr->iso = 1;
 	}
+	if (keysysm == 98)
+		gl_ptr->bonus = 1;
 	return (0);
 }
 
@@ -149,6 +157,8 @@ int main(int argc, char **argv)
 	mlx_hook(gl.win_ptr, 17, 0, &program_exit, &gl);
 	mlx_hook(gl.win_ptr, KeyPress, KeyPressMask, &key_handle, &gl);
 	mlx_loop(gl.mlx_ptr);
-	// free the map
+	mlx_destroy_display(gl.mlx_ptr);
+	free(gl.mlx_ptr);
+	free(gl.title);
 	return (0);
 }
