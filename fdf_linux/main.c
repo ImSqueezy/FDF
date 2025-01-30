@@ -31,6 +31,8 @@ void	connection_init(char *map, t_gl *gl_ptr)
 	if (!gl_ptr->img.addr)
 		return ; // destroy display, window, and image
 	gl_ptr->zoom = (SIZE_X / gl_ptr->width) / 3;
+	if (gl_ptr->zoom == 0)
+		gl_ptr->zoom = 0.52;	
 	gl_ptr->iso = 1;
 }
 
@@ -54,9 +56,8 @@ int	zoom_in_out(int code, t_gl *data)
 	{
 		if (data->zoom == 0)
 			data->zoom += 1.24;
-		data->zoom *=1.24;
+		data->zoom *= 1.24;
 	}
-	printf("%f\n", data->zoom);
 	return (0);
 }
 
@@ -89,19 +90,27 @@ void	change_altitude(int code, t_gl *data)
 {
 	int i;
 	int	j;
+	static int	color;
 
+	color = data->mc.base_color;
 	i = -1;
 	while (++i < data->height)
 	{
 		j = -1;
 		while (++j < data->width)
 		{
-			// if (code == 110 && data->map[i][j].z == 0)
-			// 	data->map[i][j].color = 0xff0000;
-			if ((code == 106 || code == 107) && data->map[i][j].z != 0)
+			if ((code == 106 || code == 107) && data->map[i][j].z != 0/*data->map[i][j].z != 0*/)
+			{
+				printf("%d\n", data->map[i][j].z);
 				z_manipulator(&data->map[i][j].z, &data->map[i][j].color, code, data);
+			}
 			else if (code == 110 && data->map[i][j].z == 0)
-				data->map[i][j].color = BLACK;
+			{
+				if (data->map[i][j].color == BLACK)
+					data->map[i][j].color = color;
+				else
+					data->map[i][j].color = BLACK;
+			}
 		}
 	}
 }
@@ -110,13 +119,21 @@ int	key_handle(int keysysm, t_gl *gl_ptr)
 {
 	if (keysysm == XK_Escape)
 		program_exit(gl_ptr);
-	if (keysysm == 61 || keysysm == 45)
+	if (keysysm == 61 || keysysm == 45) // does the zooming looks gay!
 		zoom_in_out(keysysm, gl_ptr);
 	if (keysysm == 107 || keysysm == 106 || 110) // bug needs to be fixed:
 									// the big map julia altitude changing translates the whole graph
 									// even the point that has the altitude of 0
+									// edit: the bug appears to be when the map has no 0 base altitude
+									// the minimum point starts from another value, julia from 1 as an example
 		change_altitude(keysysm, gl_ptr);
-	printf("%d\n", keysysm);
+	if (keysysm == 116)
+	{
+		if (gl_ptr->iso == 1)
+			gl_ptr->iso = 0;
+		else
+			gl_ptr->iso = 1;
+	}
 	return (0);
 }
 
@@ -131,7 +148,6 @@ int main(int argc, char **argv)
 	mlx_loop_hook(gl.mlx_ptr, draw, &gl);
 	mlx_hook(gl.win_ptr, 17, 0, &program_exit, &gl);
 	mlx_hook(gl.win_ptr, KeyPress, KeyPressMask, &key_handle, &gl);
-	// mlx_key_hook(gl.win_ptr, &key_handle, &gl);
 	mlx_loop(gl.mlx_ptr);
 	// free the map
 	return (0);
