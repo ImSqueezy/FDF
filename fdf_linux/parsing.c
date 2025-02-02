@@ -1,4 +1,4 @@
-/* ************************************************************************** */
+//* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
@@ -55,8 +55,6 @@ void	init_matrix_points(char *line, int x, t_map *arr, t_gl *data)
 
 	arr[x].x = x;
 	arr[x].z = ft_atoi(line);
-	if (arr[x].z)
-		arr[x].alt_switch = 1;
 	if (ft_strchr(line, ','))
 	{
 		data->colored = 1;
@@ -66,14 +64,7 @@ void	init_matrix_points(char *line, int x, t_map *arr, t_gl *data)
 		arr[x].color = mini_atoi_base(&line[j + 1]);
 	}
 	else
-	{
-		if (arr[x].z > 0)
-			arr[x].color = data->mc.high_altitude_color;
-		else if (arr[x].z == 0)
-			arr[x].color = data->mc.base_color;
-		else
-			arr[x].color = data->mc.low_altitude_color;
-	}
+		arr[x].color = BASE_COLOR;
 }
 
 static void	fill_matrix(char *line, int y, t_map *arr, t_gl *data_ptr)
@@ -81,9 +72,6 @@ static void	fill_matrix(char *line, int y, t_map *arr, t_gl *data_ptr)
 	int		x;
 	char	**line_splitted;
 
-	data_ptr->mc.base_color = 0xf302b63;
-	data_ptr->mc.high_altitude_color = 0xADA996;
-	data_ptr->mc.low_altitude_color = 0x00ff00;
 	line_splitted = ft_split(line, ' ');
 	if (!line_splitted)
 		return ;
@@ -163,12 +151,13 @@ void	file_check(char	*file, t_gl *data)
 // 	if (argc < 1)
 // 		return (printf("invalid args"), 0);
 // 	file_check(argv[1], &gl);
+// 	printf("z high: %d z min: %d", gl.z_high, gl.z_min);
 // 	// printf("%d >> %d\nz_min: %d z_max%d\n", gl.width, gl.height, gl.z_min, gl.z_high);
-// 	for (int i = 0; i < gl.height; i++)
-// 	{
-// 		for (int j = 0; j < gl.width; j++)
-// 			printf("%d, %d ", gl.map[i][j].z, gl.map[i][j].color);
-// 		printf("\n");
-// 	}
+// 	// for (int i = 0; i < gl.height; i++)
+// 	// {
+// 	// 	for (int j = 0; j < gl.width; j++)
+// 	// 		printf("%d, %d ", gl.map[i][j].z, gl.map[i][j].color);
+// 	// 	printf("\n");
+// 	// }
 // 	return (0);
 // }

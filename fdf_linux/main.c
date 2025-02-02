@@ -12,15 +12,7 @@
 
 #include "FDF.h"
 
-void	init_matrices(t_gl *data)
-{
-	data->mat = malloc(3 * sizeof(t_mat));
-	if (!data->mat)
-		exit(0);
-
-}
-
-void	connection_init(char *map, t_gl *gl_ptr) // make errors for allocation failure
+void	connection_init(char *map, t_gl *gl_ptr)
 {
 	char *tmp;
 
@@ -55,7 +47,7 @@ int program_exit(t_gl *gl_ptr)
 
 	mlx_destroy_image(gl_ptr->mlx_ptr, gl_ptr->img.mlx_img);
 	mlx_destroy_window(gl_ptr->mlx_ptr, gl_ptr->win_ptr);
-	gl_ptr->img.addr == NULL;
+	gl_ptr->img.addr = NULL;
 	gl_ptr->win_ptr = NULL;
 	i = -1;
 	while (++i < gl_ptr->height)
@@ -79,43 +71,31 @@ int	zoom_in_out(int code, t_gl *data)
 	return (0);
 }
 
-void z_manipulator(t_map *p, int code, t_gl *data)
+void transparent_base(int code, int *color, int *point, t_gl *data)
 {
-	if (code == 107 && p->alt_switch)
-		p->z = p->z << 1;
-	if (code == 106 && p->alt_switch)
-		p->z = p->z >> 1;
-	if (!data->colored)
-	{
-		if (p->z < 0)
-			p->color = data->mc.low_altitude_color;
-		else if (p->z > 0)
-			p->color = data->mc.high_altitude_color;
-	}
+	if (*color == BLACK)
+		*color = BASE_COLOR;
+	else
+		*color = BLACK;
 }
 
 void	change_altitude(int code, t_gl *data)
 {
 	int i;
 	int	j;
-	static int	color;
 
-	color = data->mc.base_color;
+	if (code == 106)
+		data->cam.z_alti -= 0.04;
+	else if (code == 107)
+		data->cam.z_alti += 0.04;
 	i = -1;
 	while (++i < data->height)
 	{
 		j = -1;
 		while (++j < data->width)
 		{
-			if ((code == 106 || code == 107))
-				z_manipulator(&data->map[i][j], code, data);
-			else if (code == 110 && data->map[i][j].z == 0)
-			{
-				if (data->map[i][j].color == BLACK)
-					data->map[i][j].color = color;
-				else
-					data->map[i][j].color = BLACK;
-			}
+			if (code == 110 && data->map[i][j].z == data->z_min)
+				transparent_base(code, &data->map[i][j].color, &data->map[i][j].z, data);
 		}
 	}
 }
@@ -123,13 +103,13 @@ void	change_altitude(int code, t_gl *data)
 void scaling(int code, t_gl *data)
 {
 	if (code == 104)
-		data->cam.x_scale += 2;
+		data->cam.x_scale += 10;
 	else if (code == 103)
-		data->cam.x_scale -= 2;
+		data->cam.x_scale -= 10;
 	if (code == 118)
-		data->cam.y_scale += 2;
+		data->cam.y_scale += 10;
 	else if (code == 121)
-		data->cam.y_scale -= 2;
+		data->cam.y_scale -= 10;
 }
 
 int	key_handle(int keysysm, t_gl *gl_ptr)
@@ -151,7 +131,6 @@ int	key_handle(int keysysm, t_gl *gl_ptr)
 		gl_ptr->bonus = 1;
 	if (keysysm == 104 || keysysm == 121 || keysysm == 103 || keysysm == 118)
 		scaling(keysysm, gl_ptr);
-	printf("%d\n", keysysm);
 	return (0);
 }
 

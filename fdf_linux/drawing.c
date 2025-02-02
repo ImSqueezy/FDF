@@ -28,8 +28,8 @@ void	isomet(t_map *p)
 	int	tmp;
 
 	tmp = p->x;
-	p->x = ((p->x - p->y) * cos(ISO_ANG)) + SIZE_X/2;
-	p->y = (tmp + p->y) * sin(ISO_ANG) - p->z + SIZE_Y/2;
+	p->x = ((p->x - p->y) * cos(ISO_ANG));
+	p->y = (tmp + p->y) * sin(ISO_ANG) - p->z;
 }
 
 void	drawV(t_map p1, t_map p2, t_gl *data)
@@ -107,24 +107,24 @@ void plotLine(t_map p1, t_map p2, t_gl *gl_ptr)
 		drawV(p1, p2, gl_ptr);
 }
 
-t_map	scale(t_map p, t_gl *gl_ptr) // undone
+t_map	scale(t_map p, t_gl *gl_ptr)
 {
-	if (gl_ptr->iso == 0)
+	if (!gl_ptr->colored)
 	{
-		p.x = (p.x - gl_ptr->width/2) * gl_ptr->zoom + SIZE_X/2;
-		p.y = (p.y - gl_ptr->height/2) * gl_ptr->zoom + SIZE_Y/2;
-		p.x += gl_ptr->cam.x_scale;
-		p.y += gl_ptr->cam.y_scale;
+		if (p.z > gl_ptr->z_min && p.z != gl_ptr->z_high)
+			p.color = MED_COLOR;
+		if (p.z == gl_ptr->z_high)
+			p.color = HIGH_COLOR;
+		else if (p.z < gl_ptr->z_min)
+			p.color = BELOW_BASE;
 	}
-	else
-	{
-		p.x = (p.x - gl_ptr->width/2) * gl_ptr->zoom;
-		p.y = (p.y - gl_ptr->height/2) * gl_ptr->zoom;
-		p.z *= gl_ptr->zoom;
+	p.x = (p.x - gl_ptr->width/2) * gl_ptr->zoom;
+	p.y = (p.y - gl_ptr->height/2) * gl_ptr->zoom;
+		p.z = (p.z * gl_ptr->zoom) * gl_ptr->cam.z_alti;
+	if (gl_ptr->iso == 1)
 		isomet(&p);
-		p.x += gl_ptr->cam.x_scale;
-		p.y += gl_ptr->cam.y_scale;
-	}
+	p.x += SIZE_X/2 + gl_ptr->cam.x_scale;
+	p.y += SIZE_Y/2 + gl_ptr->cam.y_scale;
 	return (p);
 }
 

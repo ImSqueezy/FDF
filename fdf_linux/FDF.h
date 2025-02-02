@@ -15,6 +15,10 @@
 
 #define SIZE_X 1500
 #define SIZE_Y 1100
+#define BASE_COLOR 0x617D93
+#define HIGH_COLOR 0x0F68A9
+#define MED_COLOR 0x4D7898
+#define BELOW_BASE 0x2E70A1
 #define MASK 255
 #define ISO_ANG 0.523599
 #define BLACK 0x000000
@@ -54,13 +58,6 @@ typedef struct s_channels
 	int	blue;
 }	t_channel;
 
-typedef struct s_map_colors
-{
-	int		base_color;
-	int		high_altitude_color;
-	int		low_altitude_color;
-}	t_mc;
-
 typedef struct s_camera
 {
 	float	z_alti;
@@ -91,7 +88,6 @@ typedef struct global_data
 	int		bonus;
 	t_cam	cam;
 	t_img	img;
-	t_mc	mc;
 	t_map	**map;
 	t_mat	*mat;
 }	t_gl;
