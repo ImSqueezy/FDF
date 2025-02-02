@@ -16,10 +16,7 @@ void	init_matrices(t_gl *data)
 {
 	data->mat = malloc(3 * sizeof(t_mat));
 	if (!data->mat)
-	{
-		write(2, "error: memory allocation for matrices!");
 		exit(0);
-	}
 
 }
 
@@ -42,17 +39,15 @@ void	connection_init(char *map, t_gl *gl_ptr) // make errors for allocation fail
 			&gl_ptr->img.bp_pixel, &gl_ptr->img.line_len, &gl_ptr->img.endian);
 	if (!gl_ptr->img.addr)
 		return ;
-	
-	// gl_ptr->zoom = (SIZE_X / gl_ptr->width) / 3;
-	// if (gl_ptr->zoom == 0)
-	// 	gl_ptr->zoom = 0.52;	
-	// gl_ptr->iso = 1;
-	// gl_ptr->bonus = 0;
-	// gl_ptr->cam.z_alti = 1;
-	// gl_ptr->cam.x_scale = 0;
-	// gl_ptr->cam.y_scale = 0;
+	gl_ptr->zoom = (SIZE_X / gl_ptr->width) / 3;
+	if (gl_ptr->zoom == 0)
+		gl_ptr->zoom = 0.52;
+	gl_ptr->iso = 1;
+	gl_ptr->bonus = 0;
+	gl_ptr->cam.z_alti = 1;
+	gl_ptr->cam.x_scale = 0;
+	gl_ptr->cam.y_scale = 0;
 }
-
 
 int program_exit(t_gl *gl_ptr)
 {
@@ -84,18 +79,18 @@ int	zoom_in_out(int code, t_gl *data)
 	return (0);
 }
 
-void z_manipulator(int *point, int *color, int code, t_gl *data)
+void z_manipulator(t_map *p, int code, t_gl *data)
 {
-	if (code == 107)
-		data->cam.x_scale += 1;
-	else
-		data->cam.y_scale += 1;
+	if (code == 107 && p->alt_switch)
+		p->z = p->z << 1;
+	if (code == 106 && p->alt_switch)
+		p->z = p->z >> 1;
 	if (!data->colored)
 	{
-		if (*point < 0)
-			*color = data->mc.low_altitude_color;
-		else if (*point >= 0)
-			*color = data->mc.high_altitude_color;
+		if (p->z < 0)
+			p->color = data->mc.low_altitude_color;
+		else if (p->z > 0)
+			p->color = data->mc.high_altitude_color;
 	}
 }
 
@@ -112,8 +107,8 @@ void	change_altitude(int code, t_gl *data)
 		j = -1;
 		while (++j < data->width)
 		{
-			if ((code == 106 || code == 107) && data->map[i][j].z != data->z_min)
-				z_manipulator(&data->map[i][j].z, &data->map[i][j].color, code, data);
+			if ((code == 106 || code == 107))
+				z_manipulator(&data->map[i][j], code, data);
 			else if (code == 110 && data->map[i][j].z == 0)
 			{
 				if (data->map[i][j].color == BLACK)
@@ -125,13 +120,25 @@ void	change_altitude(int code, t_gl *data)
 	}
 }
 
+void scaling(int code, t_gl *data)
+{
+	if (code == 104)
+		data->cam.x_scale += 2;
+	else if (code == 103)
+		data->cam.x_scale -= 2;
+	if (code == 118)
+		data->cam.y_scale += 2;
+	else if (code == 121)
+		data->cam.y_scale -= 2;
+}
+
 int	key_handle(int keysysm, t_gl *gl_ptr)
 {
 	if (keysysm == XK_Escape)
 		program_exit(gl_ptr);
 	if (keysysm == 61 || keysysm == 45)
 		zoom_in_out(keysysm, gl_ptr);
-	if (keysysm == 107 || keysysm == 106 || keysysm == 110)
+	if (keysysm == 106 || keysysm == 107 || keysysm == 110)
 		change_altitude(keysysm, gl_ptr);
 	if (keysysm == 116)
 	{
@@ -142,6 +149,9 @@ int	key_handle(int keysysm, t_gl *gl_ptr)
 	}
 	if (keysysm == 98)
 		gl_ptr->bonus = 1;
+	if (keysysm == 104 || keysysm == 121 || keysysm == 103 || keysysm == 118)
+		scaling(keysysm, gl_ptr);
+	printf("%d\n", keysysm);
 	return (0);
 }
 

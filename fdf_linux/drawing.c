@@ -109,8 +109,22 @@ void plotLine(t_map p1, t_map p2, t_gl *gl_ptr)
 
 t_map	scale(t_map p, t_gl *gl_ptr) // undone
 {
-
-	projection();
+	if (gl_ptr->iso == 0)
+	{
+		p.x = (p.x - gl_ptr->width/2) * gl_ptr->zoom + SIZE_X/2;
+		p.y = (p.y - gl_ptr->height/2) * gl_ptr->zoom + SIZE_Y/2;
+		p.x += gl_ptr->cam.x_scale;
+		p.y += gl_ptr->cam.y_scale;
+	}
+	else
+	{
+		p.x = (p.x - gl_ptr->width/2) * gl_ptr->zoom;
+		p.y = (p.y - gl_ptr->height/2) * gl_ptr->zoom;
+		p.z *= gl_ptr->zoom;
+		isomet(&p);
+		p.x += gl_ptr->cam.x_scale;
+		p.y += gl_ptr->cam.y_scale;
+	}
 	return (p);
 }
 
