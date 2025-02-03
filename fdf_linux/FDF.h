@@ -11,28 +11,27 @@
 /* ************************************************************************** */
 
 #ifndef FDF_H
-#define FDF_H
+# define FDF_H
 
-#define SIZE_X 1500
-#define SIZE_Y 1100
-#define BASE_COLOR 0x617D93
-#define HIGH_COLOR 0x0F68A9
-#define MED_COLOR 0x4D7898
-#define BELOW_BASE 0x2E70A1
-#define MASK 255
-#define ISO_ANG 0.523599
-#define BLACK 0x000000
+# define SIZE_X 1500
+# define SIZE_Y 1100
+# define BASE_COLOR 0x617D93
+# define HIGH_COLOR 0x0F68A9
+# define MED_COLOR 0x4D7898
+# define BELOW_BASE 0x2E70A1
+# define MASK 255
+# define ISO_ANG 0.523599
+# define BLACK 0x000000
 
-#include "Libft/libft.h"
-#include "get_next_line/get_next_line.h"
-#include "minilibx-linux/mlx.h"
-#include <X11/X.h>
-#include <X11/keysym.h>
-#include <math.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <stdlib.h>
+# include "Libft/libft.h"
+# include "get_next_line/get_next_line.h"
+# include "minilibx-linux/mlx.h"
+# include <X11/X.h>
+# include <X11/keysym.h>
+# include <math.h>
+# include <unistd.h>
+# include <fcntl.h>
+# include <stdlib.h>
 
 typedef struct image_data
 {
@@ -65,7 +64,6 @@ typedef struct s_camera
 	float	y_scale;
 }	t_cam;
 
-
 typedef struct matrices
 {
 	float	x;
@@ -80,8 +78,8 @@ typedef struct global_data
 	char	*title;
 	int		width;
 	int		height;
-	int		z_high;
-	int 	z_min;
+	int		z_max;
+	int		z_min;
 	float	zoom;
 	int		colored;
 	int		iso;
@@ -92,12 +90,22 @@ typedef struct global_data
 	t_mat	*mat;
 }	t_gl;
 
-void	file_check(char *file, t_gl *data);
-void	line_draw(t_map p1, t_map p2, t_gl *gl_ptr);
+void	map_init(char *file, t_gl *data);
 int		mini_atoi_base(char *color);
-void	pixel_put(t_gl *gl_ptr, int x, int y, int color);
+void	z_height_definition(int z, t_gl *data_ptr);
+
+int		connection_init(char *map, t_gl *data);
+int		connection_terminator(t_gl *data);
+void	clear_map(t_gl *data, int last_index);
+
 int		draw(t_gl *gl_ptr);
-int		linear_interpolation(t_map p1, t_map p2, int curr, int status);
-int		hooks(t_gl *gl_ptr);
+void	wireframe_instructions(t_gl *data);
+void	background_filling(t_gl *data);
+int		step_determiner(int change);
+void	draw_vertically(t_map p1, t_map p2, t_gl *data);
+void	draw_horizontally(t_map p1, t_map p2, t_gl *data);
+int		color_definition(t_map p1, t_map p2, int curr, int status);
+
+int		keybr_hooks(int keysysm, t_gl *gl_ptr);
 
 #endif

@@ -1,4 +1,4 @@
-	/* ************************************************************************** */
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   color_definition.c                                 :+:      :+:    :+:   */
@@ -14,7 +14,7 @@
 
 static double	get_fraction(int p1, int p2, int curr)
 {
-	return ((double)(curr - p1)/(double)(p2 - p1));
+	return ((double)(curr - p1) / (double)(p2 - p1));
 }
 
 static int	interpolate(int start, int end, double percentage)
@@ -25,7 +25,8 @@ static int	interpolate(int start, int end, double percentage)
 	return (color_channel);
 }
 
-static void	package_color_channels(t_channel c1, t_channel c2, t_channel *curr, double fraction)
+static void	package_color_channels(t_channel c1, t_channel c2, t_channel *curr,
+	double fraction)
 {
 	(*curr).red = interpolate(c1.red, c2.red, fraction);
 	(*curr).green = interpolate(c1.green, c2.green, fraction);
@@ -39,9 +40,9 @@ static void	split_color_channels(int color, t_channel *ptr)
 	ptr->blue = color & MASK;
 }
 
-int	linear_interpolation(t_map p1, t_map p2, int curr, int status)
+int	color_definition(t_map p1, t_map p2, int curr, int status)
 {
-	float	fraction;
+	float		fraction;
 	t_channel	curr_chan;
 	t_channel	p1_chan;
 	t_channel	p2_chan;
@@ -55,4 +56,3 @@ int	linear_interpolation(t_map p1, t_map p2, int curr, int status)
 	package_color_channels(p1_chan, p2_chan, &curr_chan, fraction);
 	return ((curr_chan.red << 16) | (curr_chan.green << 8) | curr_chan.blue);
 }
-

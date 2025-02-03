@@ -1,6 +1,7 @@
 NAME = fdf 
 
-OBJS = main.o parsing.o utils.o drawing.o color_definition.o \
+OBJS = main.o parsing.o utils.o drawing.o color_definition.o drawing_utils.o \
+	mlx_connection.o hooks.o \
 	get_next_line/get_next_line.o get_next_line/get_next_line_utils.o \
 
 LIBFT_SRCS = $(wildcard Libft/*.c)
