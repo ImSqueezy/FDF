@@ -15,7 +15,11 @@
 int	main(int argc, char **argv)
 {
 	t_gl	gl;
-
+	
+	gl.rotation = 0;
+	gl.angl = 0.523599;
+	gl.y_angl = 0.008;
+	gl.z_angl = 0.008;
 	if (argc < 1)
 		return (printf("args!"), 0);
 	map_init(argv[1], &gl);

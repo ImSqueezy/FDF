@@ -8,7 +8,7 @@ LIBFT_SRCS = $(wildcard Libft/*.c)
 LIBFT = Libft/libft.a
 
 MLX_LIB = minilibx-linux/libmlx_Linux.a
-MLX_F = -lXext -lX11 -lm 
+MLX_F = -lXext -lX11 -lm  -O3
 
 FLAGS = -g
 # -Wall -Wextra -Werror commented for later use

@@ -29,6 +29,8 @@ static int	zoom_in_out(int code, t_gl *data)
 
 static void	transparent_base(int code, int *color, int *point, t_gl *data)
 {
+	if (data->colored == 1)
+		return ;
 	if (*color == BLACK)
 		*color = BASE_COLOR;
 	else
@@ -69,6 +71,29 @@ static void	scaling(int code, t_gl *data)
 		data->cam.y_scale -= 10;
 }
 
+void rotation(int code, t_gl *data)
+{
+	if (code == XK_d)
+		data->angl += 0.02;
+	else if (code == XK_a)
+		data->angl -= 0.02;
+	else if (code == 32 && !data->rotation)
+		data->rotation = 1;
+	else if (code == 32 && data->rotation)
+	{
+		data->rotation = 0;
+		data->angl = 0.008;
+	}
+	else if (code == XK_w)
+		data->y_angl += 0.02;
+	else if (code == XK_s)
+		data->y_angl -= 0.02;
+	else if (code == XK_q)
+		data->z_angl += 0.02;
+	else if (code == XK_e)
+		data->z_angl -= 0.02;
+}
+
 int	keybr_hooks(int keysysm, t_gl *gl_ptr)
 {
 	if (keysysm == XK_Escape)
@@ -89,5 +114,6 @@ int	keybr_hooks(int keysysm, t_gl *gl_ptr)
 	else if (keysysm == 104 || keysysm == 121 || keysysm == 103
 		|| keysysm == 118)
 		scaling(keysysm, gl_ptr);
+	rotation(keysysm, gl_ptr);
 	return (0);
 }
