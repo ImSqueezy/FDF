@@ -1,5 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
@@ -47,6 +45,7 @@ static void	init_matrix_points(char *line, int x, t_map *arr, t_gl *data)
 
 	arr[x].x = x;
 	arr[x].z = ft_atoi(line);
+	data->colored = 0;
 	if (ft_strchr(line, ','))
 	{
 		data->colored = 1;
@@ -59,14 +58,14 @@ static void	init_matrix_points(char *line, int x, t_map *arr, t_gl *data)
 		arr[x].color = BASE_COLOR;
 }
 
-static void	fill_matrix(char *line, int y, t_map *arr, t_gl *data_ptr)
+static int	fill_matrix(char *line, int y, t_map *arr, t_gl *data_ptr)
 {
 	int		x;
 	char	**line_splitted;
 
 	line_splitted = ft_split(line, ' ');
 	if (!line_splitted)
-		return ;
+		return (perror("malloc failure"), 0);
 	x = -1;
 	while (++x < (*data_ptr).width)
 	{
@@ -77,6 +76,7 @@ static void	fill_matrix(char *line, int y, t_map *arr, t_gl *data_ptr)
 		free(line_splitted[x]);
 	}
 	free(line_splitted);
+	return (1);
 }
 
 static int	get_mapdata(char *filename, t_gl *data_ptr)
@@ -113,7 +113,6 @@ void	map_init(char	*file, t_gl *data)
 	int		fd;
 	char	*line;
 
-	data->colored = 0;
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
 		return (perror("open"), exit(0));
@@ -131,7 +130,8 @@ void	map_init(char	*file, t_gl *data)
 		(*data).map[i] = malloc((*data).width * sizeof(t_map));
 		if (!(*data).map)
 			return (perror("malloc failure"), clear_map(data, i), exit(0));
-		fill_matrix(line, i, (*data).map[i], data);
+		if (!fill_matrix(line, i, (*data).map[i], data))
+			return (clear_map(data, i), exit(0));
 		free(line);
 	}
 }

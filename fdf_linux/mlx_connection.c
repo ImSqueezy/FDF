@@ -21,6 +21,10 @@ static void	defaults(t_gl *data)
 	data->bonus = 0;
 	data->cam.z_alti = 1;
 	data->cam.x_scale = 0;
+	data->rotation = 0;
+	data->x_angl = 0;
+	data->y_angl = 0;
+	data->z_angl = 0;
 	data->cam.y_scale = 0;
 }
 
@@ -28,8 +32,14 @@ int	connection_init(char *map, t_gl *data)
 {
 	char	*tmp;
 
-	tmp = ft_strchr(map, '/');
-	data->title = ft_strjoin("aouaalla's FDF : ", ++tmp);
+	if (ft_strchr(map, '/'))
+	{
+		tmp = ft_strchr(map, '/');
+		tmp++;
+	}
+	else
+		tmp = map;
+	data->title = ft_strjoin("aouaalla's FDF : ", tmp);
 	data->mlx_ptr = mlx_init();
 	if (!data->mlx_ptr)
 		return (connection_terminator(data), 0);

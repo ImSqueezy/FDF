@@ -80,10 +80,14 @@ typedef struct global_data
 	int		height;
 	int		z_max;
 	int		z_min;
-	float	zoom;
 	int		colored;
 	int		iso;
 	int		bonus;
+	int		rotation;
+	float	zoom;
+	float	x_angl;
+	float	y_angl;
+	float	z_angl;
 	t_cam	cam;
 	t_img	img;
 	t_map	**map;
@@ -93,11 +97,9 @@ typedef struct global_data
 void	map_init(char *file, t_gl *data);
 int		mini_atoi_base(char *color);
 void	z_height_definition(int z, t_gl *data_ptr);
-
 int		connection_init(char *map, t_gl *data);
 int		connection_terminator(t_gl *data);
 void	clear_map(t_gl *data, int last_index);
-
 int		draw(t_gl *gl_ptr);
 void	wireframe_instructions(t_gl *data);
 void	background_filling(t_gl *data);
@@ -105,7 +107,10 @@ int		step_determiner(int change);
 void	draw_vertically(t_map p1, t_map p2, t_gl *data);
 void	draw_horizontally(t_map p1, t_map p2, t_gl *data);
 int		color_definition(t_map p1, t_map p2, int curr, int status);
-
 int		keybr_hooks(int keysysm, t_gl *gl_ptr);
+void	rotate_y(t_map *p, t_gl *data);
+void	rotate_x(t_map *p, t_gl *data);
+void	rotate_z(t_map *p, t_gl *data);
+void	rotation_hooks(int code, t_gl *data);
 
 #endif

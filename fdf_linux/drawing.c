@@ -12,7 +12,7 @@
 
 #include "FDF.h"
 
-static void	isomet(t_map *p, t_gl *data)
+static void	isomet(t_map *p)
 {
 	int	tmp;
 
@@ -34,53 +34,29 @@ static void	plot_line(t_map p1, t_map p2, t_gl *gl_ptr)
 		draw_vertically(p1, p2, gl_ptr);
 }
 
-void rotate_y(t_map *p, t_gl *data)
+static void	data_coloring(t_map *p, t_gl *data)
 {
-	int tmp;
-
-	tmp = p->x;
-	p->x = p->x * cos(data->angl) + p->z * sin(data->angl);
-	p->z = tmp * -sin(data->angl) + p->z * cos(data->angl);
-}
-
-void	rotate_x(t_map *p, t_gl *data)
-{
-	int	tmp;
-
-	tmp = p->y;
-	p->y = p->y * cos(data->y_angl) + p->z * -sin(data->y_angl);
-	p->z = tmp * sin(data->y_angl) + p->z * cos(data->y_angl);
-}
-
-void	rotate_z(t_map *p, t_gl *data)
-{
-	int	tmp;
-
-	tmp = p->x;
-	p->x = p->x * cos(data->z_angl) + p->y * -sin(data->z_angl);
-	p->y = tmp * sin(data->z_angl) + p->y * cos(data->z_angl);
+	if (!data->colored)
+	{
+		if (p->z > data->z_min && p->z != data->z_max)
+			p->color = MED_COLOR;
+		if (p->z == data->z_max)
+			p->color = HIGH_COLOR;
+		else if (p->z < data->z_min)
+			p->color = BELOW_BASE;
+	}
 }
 
 static t_map	scale(t_map p, t_gl *gl_ptr)
 {
-	if (!gl_ptr->colored)
-	{
-		if (p.z > gl_ptr->z_min && p.z != gl_ptr->z_max)
-			p.color = MED_COLOR;
-		if (p.z == gl_ptr->z_max)
-			p.color = HIGH_COLOR;
-		else if (p.z < gl_ptr->z_min)
-			p.color = BELOW_BASE;
-	}
+	data_coloring(&p, gl_ptr);
 	p.x = (p.x - gl_ptr->width / 2) * gl_ptr->zoom;
 	p.y = (p.y - gl_ptr->height / 2) * gl_ptr->zoom;
-	p.z = (p.z * gl_ptr->zoom) * gl_ptr->cam.z_alti;
-	if (gl_ptr->iso == 1)
-		isomet(&p, gl_ptr);
-	if (gl_ptr->rotation)
+	p.z = (p.z * gl_ptr->zoom) * gl_ptr->cam.z_alti / 10;
+	if (gl_ptr->rotation && (gl_ptr->width < 100 || gl_ptr->height < 100))
 	{
 		rotate_y(&p, gl_ptr);
-		gl_ptr->angl += 0.000008;
+		gl_ptr->x_angl += 0.000008;
 	}
 	else if (!gl_ptr->rotation)
 	{
@@ -88,6 +64,8 @@ static t_map	scale(t_map p, t_gl *gl_ptr)
 		rotate_y(&p, gl_ptr);
 		rotate_z(&p, gl_ptr);
 	}
+	if (gl_ptr->iso == 1)
+		isomet(&p);
 	p.x += SIZE_X / 2 + gl_ptr->cam.x_scale;
 	p.y += SIZE_Y / 2 + gl_ptr->cam.y_scale;
 	return (p);

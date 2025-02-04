@@ -14,26 +14,20 @@
 
 static int	zoom_in_out(int code, t_gl *data)
 {
-	if (code == 45)
+	if (code == XK_minus)
 		data->zoom /= 1.24;
 	if (data->zoom >= 1345.080933)
 		return (0);
-	if (code == 61)
-	{
-		if (data->zoom == 0)
-			data->zoom += 1.24;
+	if (code == XK_equal)
 		data->zoom *= 1.24;
-	}
 	return (0);
 }
 
-static void	transparent_base(int code, int *color, int *point, t_gl *data)
+static void	transparent_base(int *color, t_gl *data)
 {
-	if (data->colored == 1)
-		return ;
-	if (*color == BLACK)
+	if (*color == BLACK && data->width < 100)
 		*color = BASE_COLOR;
-	else
+	else if (*color != BLACK && data->width < 100)
 		*color = BLACK;
 }
 
@@ -42,78 +36,54 @@ static void	change_altitude(int code, t_gl *data)
 	int	i;
 	int	j;
 
-	if (code == 106)
-		data->cam.z_alti -= 0.04;
-	else if (code == 107)
-		data->cam.z_alti += 0.04;
+	if (code == XK_j)
+		data->cam.z_alti -= 0.09;
+	else if (code == XK_k)
+		data->cam.z_alti += 0.09;
 	i = -1;
 	while (++i < data->height)
 	{
 		j = -1;
 		while (++j < data->width)
 		{
-			if (code == 110 && data->map[i][j].z == data->z_min)
-				transparent_base(code, &data->map[i][j].color,
-					&data->map[i][j].z, data);
+			if (code == XK_n && data->map[i][j].z == data->z_min)
+				transparent_base(&data->map[i][j].color, data);
 		}
 	}
 }
 
 static void	scaling(int code, t_gl *data)
 {
-	if (code == 104)
+	if (code == XK_h)
 		data->cam.x_scale += 10;
-	else if (code == 103)
+	else if (code == XK_g)
 		data->cam.x_scale -= 10;
-	if (code == 118)
+	if (code == XK_v)
 		data->cam.y_scale += 10;
-	else if (code == 121)
+	else if (code == XK_y)
 		data->cam.y_scale -= 10;
-}
-
-void rotation(int code, t_gl *data)
-{
-	if (code == XK_d)
-		data->angl += 0.02;
-	else if (code == XK_a)
-		data->angl -= 0.02;
-	else if (code == 32 && !data->rotation)
-		data->rotation = 1;
-	else if (code == 32 && data->rotation)
-	{
-		data->rotation = 0;
-		data->angl = 0.008;
-	}
-	else if (code == XK_w)
-		data->y_angl += 0.02;
-	else if (code == XK_s)
-		data->y_angl -= 0.02;
-	else if (code == XK_q)
-		data->z_angl += 0.02;
-	else if (code == XK_e)
-		data->z_angl -= 0.02;
 }
 
 int	keybr_hooks(int keysysm, t_gl *gl_ptr)
 {
 	if (keysysm == XK_Escape)
 		connection_terminator(gl_ptr);
-	else if (keysysm == 61 || keysysm == 45)
+	else if (keysysm == XK_minus || keysysm == XK_equal)
 		zoom_in_out(keysysm, gl_ptr);
-	else if (keysysm == 106 || keysysm == 107 || keysysm == 110)
+	else if (keysysm == XK_j || keysysm == XK_k || keysysm == XK_n)
 		change_altitude(keysysm, gl_ptr);
-	else if (keysysm == 116)
+	else if (keysysm == XK_t)
 	{
 		if (gl_ptr->iso == 1)
 			gl_ptr->iso = 0;
 		else
 			gl_ptr->iso = 1;
 	}
-	else if (keysysm == 98)
+	else if (keysysm == XK_b)
 		gl_ptr->bonus = 1;
-	else if (keysysm == 104 || keysysm == 121 || keysysm == 103
-		|| keysysm == 118)
+	else if (keysysm == XK_y || keysysm == XK_v || keysysm == XK_g
+		|| keysysm == XK_h)
 		scaling(keysysm, gl_ptr);
-	rotation(keysysm, gl_ptr);
+	rotation_hooks(keysysm, gl_ptr);
 	return (0);
 }
