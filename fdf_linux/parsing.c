@@ -18,6 +18,10 @@ static void	init_matrix_points(char *line, int x, t_map *arr, t_gl *data)
 
 	arr[x].x = x;
 	arr[x].z = ft_atoi(line);
+	if (arr[x].z > SIZE_Y)
+		arr[x].z = SIZE_Y;
+	else if (arr[x].z < -SIZE_Y)
+		arr[x].z = -SIZE_Y;
 	if (ft_strchr(line, ','))
 	{
 		data->colored = 1;

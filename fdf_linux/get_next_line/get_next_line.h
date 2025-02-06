@@ -13,10 +13,10 @@
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
+# define MAX_LESS 5000
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE MAX_LESS
 # endif
-# define MAX_LESS 2147483646
 # include "../Libft/libft.h"
 # include <unistd.h>
 # include <stdlib.h>

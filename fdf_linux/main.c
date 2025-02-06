@@ -29,5 +29,6 @@ int	main(int argc, char **argv)
 	mlx_loop(gl.mlx_ptr);
 	mlx_destroy_display(gl.mlx_ptr);
 	free(gl.mlx_ptr);
+	printf("z min: %d z max: %d\n", gl.z_min, gl.z_max);
 	return (0);
 }
