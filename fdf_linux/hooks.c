@@ -37,9 +37,9 @@ static void	change_altitude(int code, t_gl *data)
 	int	j;
 
 	if (code == XK_j)
-		data->cam.z_alti -= 0.01;
+		data->cam.z_alti -= 0.02;
 	else if (code == XK_k)
-		data->cam.z_alti += 0.01;
+		data->cam.z_alti += 0.02;
 	i = -1;
 	while (++i < data->height)
 	{

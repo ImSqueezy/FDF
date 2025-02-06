@@ -18,8 +18,8 @@ int	main(int argc, char **argv)
 	int		fd;
 
 	fd = open(argv[1], O_RDONLY);
-	if (argc > 3)
-		return (printf("args!"), 0);
+	if (argc != 2)
+		return (write(2, "invalid number of args!", 23), 0);
 	map_init(argv[1], fd, &gl);
 	if (!connection_init(argv[1], &gl))
 		return (write(2, "connection initialization failed!", 33), 1);
