@@ -15,10 +15,14 @@
 
 # define SIZE_X 1500
 # define SIZE_Y 1100
-# define BASE_COLOR 0x617D93
-# define HIGH_COLOR 0x0F68A9
-# define MED_COLOR 0x4D7898
-# define BELOW_BASE 0x2E70A1
+# define GRAY 0x617D93
+# define DARK_BLUE 0x0F68A9
+# define BLUE 0x2E70A1
+# define DARK_MODERATE_BLUE 0x4D7898
+# define BASE_COLOR GRAY
+# define HIGH_COLOR DARK_BLUE
+# define MED_COLOR DARK_MODERATE_BLUE
+# define BELOW_BASE BLUE
 # define MASK 255
 # define ISO_ANG 0.523599
 # define BLACK 0x000000
@@ -64,13 +68,6 @@ typedef struct s_camera
 	float	y_scale;
 }	t_cam;
 
-typedef struct matrices
-{
-	float	x;
-	float	y;
-	float	z;
-}	t_mat;
-
 typedef struct global_data
 {
 	void	*mlx_ptr;
@@ -91,11 +88,12 @@ typedef struct global_data
 	t_cam	cam;
 	t_img	img;
 	t_map	**map;
-	t_mat	*mat;
 }	t_gl;
 
-void	map_init(char *file, t_gl *data);
+void	map_init(char *file, int fd, t_gl *data);
 int		mini_atoi_base(char *color);
+int		words_counter(char *line);
+void	clear_double(char **ptr);
 void	z_height_definition(int z, t_gl *data_ptr);
 int		connection_init(char *map, t_gl *data);
 int		connection_terminator(t_gl *data);

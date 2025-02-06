@@ -15,14 +15,16 @@
 int	main(int argc, char **argv)
 {
 	t_gl	gl;
+	int		fd;
 
-	if (argc < 1)
+	fd = open(argv[1], O_RDONLY);
+	if (argc > 3)
 		return (printf("args!"), 0);
-	map_init(argv[1], &gl);
+	map_init(argv[1], fd, &gl);
 	if (!connection_init(argv[1], &gl))
 		return (write(2, "connection initialization failed!", 33), 1);
 	mlx_loop_hook(gl.mlx_ptr, draw, &gl);
-	mlx_hook(gl.win_ptr, 17, 0, &connection_terminator, &gl);
+	mlx_hook(gl.win_ptr, DestroyNotify, 0, &connection_terminator, &gl);
 	mlx_hook(gl.win_ptr, KeyPress, KeyPressMask, &keybr_hooks, &gl);
 	mlx_loop(gl.mlx_ptr);
 	mlx_destroy_display(gl.mlx_ptr);

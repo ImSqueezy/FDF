@@ -14,15 +14,16 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 37
+#  define BUFFER_SIZE MAX_LESS
 # endif
+# define MAX_LESS 2147483646
 # include "../Libft/libft.h"
 # include <unistd.h>
 # include <stdlib.h>
 # include <limits.h>
 # include <stdio.h>
 
-char	*get_next_line(int fd);
+char	*get_next_line(int fd, int flag);
 char	*ft_strdup(const char *str);
 char	*ft_strchr(const char *str, int c);
 char	*ft_substr(const char *s, unsigned int start, size_t len);

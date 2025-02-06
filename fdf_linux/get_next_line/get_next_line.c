@@ -62,13 +62,19 @@ static char	*after_nline(char *str)
 	return (ft_strdup(tmp));
 }
 
-char	*get_next_line(int fd)
+char	*get_next_line(int fd, int flag)
 {
 	static char	*st;
 	char		*p;
 	char		*container;
 	char		*line;
 
+	if (!flag)
+	{
+		free(st);
+		st = NULL;
+		return (0);
+	}
 	p = NULL;
 	if (BUFFER_SIZE >= INT_MAX || BUFFER_SIZE <= 0)
 		return (write(2, "Invalid BUFFER_SIZE!", 19), NULL);

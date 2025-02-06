@@ -33,28 +33,28 @@ int	mini_atoi_base(char *line)
 	return (result);
 }
 
+int	words_counter(char *line)
+{
+	int	i;
+	int	width;
+
+	width = 0;
+	i = -1;
+	while (line[++i])
+	{
+		if ((line[i] != ' ' && line[i] != '\n') && (line[i + 1] == '\n'
+				|| line[i + 1] == ' ' || line[i + 1] == '\0'))
+			width++;
+	}
+	return (width);
+}
+
 void	z_height_definition(int z, t_gl *data_ptr)
 {
 	if (z > data_ptr->z_max)
 		data_ptr->z_max = z;
 	else if (z < data_ptr->z_min)
 		data_ptr->z_min = z;
-}
-
-void	clear_map(t_gl *data, int last_index)
-{
-	int	i;
-
-	if (!data->map)
-		return ;
-	i = 0;
-	while (i < last_index)
-	{
-		free(data->map[i]);
-		i++;
-	}
-	free(data->map);
-	data->map = NULL;
 }
 
 void	view_status(t_gl *data)

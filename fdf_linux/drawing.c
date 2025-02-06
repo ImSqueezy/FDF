@@ -52,7 +52,7 @@ static t_map	scale(t_map p, t_gl *gl_ptr)
 	data_coloring(&p, gl_ptr);
 	p.x = (p.x - gl_ptr->width / 2) * gl_ptr->zoom;
 	p.y = (p.y - gl_ptr->height / 2) * gl_ptr->zoom;
-	p.z = (p.z * gl_ptr->zoom) * gl_ptr->cam.z_alti / 10;
+	p.z = (p.z * gl_ptr->zoom) * gl_ptr->cam.z_alti;
 	if (gl_ptr->rotation && (gl_ptr->width < 100 || gl_ptr->height < 100))
 	{
 		rotate_y(&p, gl_ptr);
