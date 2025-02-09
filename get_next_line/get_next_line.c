@@ -28,7 +28,7 @@ static char	*init(int fd, char *s, char *buffer)
 	{
 		i = read(fd, buffer, BUFFER_SIZE);
 		if (i < 0)
-			return (perror("Error reading the file"), clear(&buffer), buffer);
+			return (clear(&buffer), buffer);
 		buffer[i] = '\0';
 		tmp = s;
 		s = ft_strjoin(tmp, buffer);

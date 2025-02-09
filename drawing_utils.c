@@ -62,6 +62,8 @@ void	draw_vertically(t_map p1, t_map p2, t_gl *data)
 	current = p1;
 	while (current.y != p2.y)
 	{
+		pixel_put(data, current.x, current.y,
+			color_definition(p1, p2, current.y, 1));
 		if (decition < 0)
 			decition = decition + 2 * abs(dx);
 		else
@@ -70,8 +72,6 @@ void	draw_vertically(t_map p1, t_map p2, t_gl *data)
 			decition = decition + 2 * abs(dx) - 2 * abs(dy);
 		}
 		current.y += step_determiner(dy);
-		pixel_put(data, current.x, current.y,
-			color_definition(p1, p2, current.y, 1));
 	}
 }
 
@@ -88,6 +88,8 @@ void	draw_horizontally(t_map p1, t_map p2, t_gl *data)
 	current = p1;
 	while (current.x != p2.x)
 	{
+		pixel_put(data, current.x, current.y,
+			color_definition(p1, p2, current.x, 0));
 		if (decition < 0)
 			decition = decition + 2 * abs(dy);
 		else
@@ -96,7 +98,5 @@ void	draw_horizontally(t_map p1, t_map p2, t_gl *data)
 			decition = decition + 2 * abs(dy) - 2 * abs(dx);
 		}
 		current.x += step_determiner(dx);
-		pixel_put(data, current.x, current.y,
-			color_definition(p1, p2, current.x, 0));
 	}
 }

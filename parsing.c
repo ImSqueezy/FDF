@@ -118,10 +118,10 @@ void	map_init(char	*file, int fd, t_gl *data)
 	if (fd < 0)
 		return (perror("open"), exit(0));
 	if (!get_mapdata(file, data))
-		exit(0);
+		return (close(fd), exit(0));
 	(*data).map = malloc((*data).height * sizeof(t_map *));
 	if (!(*data).map)
-		return (perror("malloc failure"), exit(0));
+		return (perror("malloc failure"), close(fd), exit(0));
 	i = -1;
 	while (++i < (*data).height)
 	{
@@ -132,8 +132,8 @@ void	map_init(char	*file, int fd, t_gl *data)
 		if (!(*data).map)
 			return (perror("malloc failure"), clear_map(data, i), exit(0));
 		if (!fill_matrix(line, i, (*data).map[i], data))
-			return (clear_map(data, ++i), free(line)
-				, get_next_line(fd, 0), exit(0));
+			return (clear_map(data, ++i), free(line),
+				get_next_line(fd, 0), close(fd), exit(0));
 		free(line);
 	}
 	get_next_line(fd, 0);

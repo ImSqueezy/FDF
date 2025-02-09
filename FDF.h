@@ -33,9 +33,8 @@
 # include <X11/X.h>
 # include <X11/keysym.h>
 # include <math.h>
-# include <unistd.h>
 # include <fcntl.h>
-# include <stdlib.h>
+# include <stdio.h>
 
 typedef struct image_data
 {

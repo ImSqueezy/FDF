@@ -21,7 +21,6 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <limits.h>
-# include <stdio.h>
 
 char	*get_next_line(int fd, int flag);
 char	*ft_strdup(const char *str);
